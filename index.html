@@ -3,571 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NT's Sky — Difusi Titik-Sumber</title>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
-
+<title>NT's Sky</title>
+<link rel="stylesheet" href="assets/style.css">
 <style>
-  :root{
-    --bg: #ffffff;
-    --panel: #ffffff;
-    --panel-line: #e4e4e4;
-    --ink: #111111;
-    --ink-dim: #767676;
-    --red: #e1222c;
-    --red-soft: rgba(225,34,44,0.10);
-    --black: #111111;
-    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-    --sans: 'Inter', -apple-system, Segoe UI, sans-serif;
-    --slab: 'Zilla Slab', 'Roboto Slab', Georgia, serif;
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zilla+Slab:wght@500;600;700&display=swap');
+
+  .hero{
+    padding-top: 6vh;
+    max-width: 640px;
+  }
+  .wave{
+    display: inline-block;
+    animation: wave 2.2s ease-in-out infinite;
+    transform-origin: 70% 70%;
+  }
+  @keyframes wave{
+    0%, 60%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(14deg); }
+    20% { transform: rotate(-8deg); }
+    30% { transform: rotate(14deg); }
+    40% { transform: rotate(-4deg); }
   }
 
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Zilla+Slab:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
-
-  *{ box-sizing: border-box; }
-
-  html, body{
-    margin:0; padding:0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--sans);
-    height: 100%;
-  }
-
-  .page{
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 30px 24px 60px;
-  }
-
-  .brandbar{
-    display:flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 26px;
-  }
-  .brandmark{
+  .hero h1{
     font-family: var(--slab);
     font-weight: 700;
-    font-size: 20px;
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.1;
+    margin: 0 0 18px 0;
     letter-spacing: -0.5px;
   }
-  .brandmark .n{ color: var(--black); }
-  .brandmark .t{ color: var(--red); }
-  .brandbar .proj{
+
+  .hero .lede{
+    font-family: var(--slab);
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--black);
+    margin: 0 0 14px 0;
+    position: relative;
+    display: inline-block;
+  }
+  .hero .lede .underline{
+    position: relative;
+  }
+  .hero .lede .underline::after{
+    content: '';
+    position: absolute;
+    left: -2px; right: -2px; bottom: 1px;
+    height: 8px;
+    background: var(--red-soft);
+    z-index: -1;
+    border-radius: 2px;
+  }
+
+  .hero p.body{
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: var(--ink-dim);
+    margin: 0 0 30px 0;
+    max-width: 52ch;
+  }
+
+  .teaser{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 14px 18px;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .teaser:hover{
+    border-color: var(--red);
+    transform: translateX(2px);
+  }
+  .teaser .dot{
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+  .teaser .txt b{
+    display: block;
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  .teaser .txt span{
     font-size: 12.5px;
     color: var(--ink-dim);
-    border-left: 1px solid var(--panel-line);
-    padding-left: 10px;
   }
-
-  header{
-    display:flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 18px;
-    border-bottom: 2px solid var(--black);
-    padding-bottom: 20px;
-    margin-bottom: 28px;
-  }
-
-  h1{
-    font-family: var(--slab);
-    font-weight: 700;
-    font-size: 27px;
-    margin: 0 0 4px 0;
-    letter-spacing: -0.2px;
-    color: var(--black);
-  }
-
-  header p{
-    margin: 0;
-    color: var(--ink-dim);
-    font-size: 14.5px;
-    max-width: 46ch;
-    line-height: 1.5;
-  }
-
-  #eq{
-    font-size: 21px;
+  .teaser .arrow{
+    margin-left: 10px;
     color: var(--red);
-    padding: 6px 0;
+    font-size: 18px;
+    transition: transform .15s ease;
   }
-  #eq .katex{ color: var(--red); }
+  .teaser:hover .arrow{ transform: translateX(4px); }
 
-  .layout{
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 28px;
-  }
-
-  @media (max-width: 820px){
-    .layout{ grid-template-columns: 1fr; }
-  }
-
-  .panel{
-    background: var(--panel);
-    border: 1px solid var(--panel-line);
-    border-radius: 4px;
-    padding: 20px;
-  }
-
-  .mode-switch{
-    display: flex;
-    gap: 6px;
-    margin-bottom: 22px;
-    background: #f4f4f4;
-    padding: 4px;
-    border-radius: 4px;
-  }
-  .mode-switch button{
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--ink-dim);
-    font-family: var(--sans);
-    font-weight: 500;
-    font-size: 13.5px;
-    padding: 8px 0;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background .15s ease, color .15s ease;
-  }
-  .mode-switch button.active{
-    background: var(--black);
-    color: #ffffff;
-  }
-
-  .field{
-    margin-bottom: 22px;
-  }
-  .field:last-of-type{ margin-bottom: 4px; }
-
-  .field-top{
-    display:flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
-  }
-
-  .field label{
-    font-size: 13.5px;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .field .sym{
+  .signoff{
+    margin-top: 46px;
     font-family: var(--slab);
     font-style: italic;
-    color: var(--red);
-    margin-right: 5px;
-  }
-
-  .field .val{
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--red);
-    background: #faf5f5;
-    border: 1px solid var(--panel-line);
-    padding: 2px 8px;
-    border-radius: 3px;
-  }
-
-  input[type="range"]{
-    -webkit-appearance: none;
-    width: 100%;
-    height: 3px;
-    border-radius: 2px;
-    background: linear-gradient(90deg, #111111, #e1222c);
-    outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb{
-    -webkit-appearance: none;
-    width: 15px; height: 15px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2.5px solid var(--red);
-    cursor: pointer;
-    margin-top: -6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
-  }
-  input[type="range"]::-moz-range-thumb{
-    width: 13px; height: 13px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2.5px solid var(--red);
-    cursor: pointer;
-  }
-
-  .field .range-labels{
-    display:flex;
-    justify-content: space-between;
-    font-family: var(--mono);
-    font-size: 10.5px;
     color: var(--ink-dim);
-    margin-top: 4px;
-  }
-
-  .divider{
-    border: none;
-    border-top: 1px solid var(--panel-line);
-    margin: 20px 0;
-  }
-
-  .readout{
-    font-size: 13px;
-    color: var(--ink-dim);
-    line-height: 1.7;
-  }
-  .readout b{
-    color: var(--black);
-    font-family: var(--mono);
-    font-weight: 500;
-  }
-
-  #reset{
-    margin-top: 18px;
-    width: 100%;
-    background: transparent;
-    border: 1px solid var(--black);
-    color: var(--black);
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 9px 0;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background .15s ease, color .15s ease;
-  }
-  #reset:hover{
-    background: var(--black);
-    color: #ffffff;
-  }
-
-  .plot-wrap{
-    background: var(--panel);
-    border: 1px solid var(--panel-line);
-    border-radius: 4px;
-    padding: 12px;
-    height: 560px;
-  }
-
-  #plot{ width: 100%; height: 100%; }
-
-  footer{
-    margin-top: 22px;
-    color: var(--ink-dim);
-    font-size: 12.5px;
-    line-height: 1.6;
+    font-size: 14px;
   }
 </style>
 </head>
 <body>
 
-<div class="page">
+<div class="shell">
 
-  <div class="brandbar">
-    <span class="brandmark"><span class="n">N</span><span class="t">T</span>'s Sky</span>
-    <span class="proj">proyek berjalan · simulasi difusi</span>
-  </div>
-
-  <header>
+  <aside class="sidebar">
     <div>
-      <h1>Difusi titik-sumber</h1>
-      <p>Konsentrasi zat yang menyebar dari satu titik sumber pada garis tak hingga, seiring waktu.</p>
-    </div>
-    <div id="eq"></div>
-  </header>
-
-  <div class="layout">
-
-    <div class="panel">
-      <div class="mode-switch">
-        <button id="btn2d" class="active">Tampilan 2D</button>
-        <button id="btn3d">Tampilan 3D</button>
-      </div>
-
-      <div class="mode-switch" id="dragModeSwitch" style="display:none; margin-top:-6px; margin-bottom:22px;">
-        <button id="btnOrbit" class="active">Putar tampilan</button>
-        <button id="btnPan">Geser tampilan</button>
-      </div>
-
-      <div class="field">
-        <div class="field-top">
-          <label><span class="sym">m</span>massa zat</label>
-          <span class="val" id="mVal">1.00</span>
-        </div>
-        <input type="range" id="mSlider" min="0.1" max="20" step="0.1" value="1">
-        <div class="range-labels"><span>0.1</span><span>20</span></div>
-      </div>
-
-      <div class="field">
-        <div class="field-top">
-          <label><span class="sym">D</span>koefisien difusi</label>
-          <span class="val" id="DVal">1.00</span>
-        </div>
-        <input type="range" id="DSlider" min="0.05" max="20" step="0.05" value="1">
-        <div class="range-labels"><span>0.05</span><span>20</span></div>
-      </div>
-
-      <div class="field" id="tField">
-        <div class="field-top">
-          <label><span class="sym">t</span>waktu</label>
-          <span class="val" id="tVal">1.00</span>
-        </div>
-        <input type="range" id="tSlider" min="0.05" max="20" step="0.05" value="1">
-        <div class="range-labels"><span>0.05</span><span>20</span></div>
-      </div>
-
-      <hr class="divider">
-
-      <div class="readout">
-        Puncak <b>c(0,t)</b> saat ini:<br>
-        <b id="peakVal">—</b>
-      </div>
-
-      <button id="reset">Kembalikan nilai & sumbu awal</button>
+      <div class="brandmark"><span class="n">N</span><span class="t">T</span>'s Sky</div>
+      <div class="brand-sub">catatan &amp; eksperimen pribadi</div>
     </div>
 
-    <div class="plot-wrap">
-      <div id="plot"></div>
+    <nav>
+      <a class="nav-link active" href="index.html">Beranda</a>
+
+      <div class="nav-label">Eksperimen</div>
+      <a class="nav-link" href="simulasi-konsentrasi.html">
+        Simulasi Konsentrasi Zat
+      </a>
+      <a class="nav-link disabled" href="graf-explorer.html">
+        Graf Explorer <span class="badge">segera</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <span class="status-pill"><span class="status-dot"></span> Ongoing</span>
     </div>
+  </aside>
 
-  </div>
+  <main class="main">
+    <div class="hero">
+      <h1><span class="wave">👋</span> Halo, everyone.</h1>
+      <p class="lede"><span class="underline">Saya Normand</span>, seorang pembelajar.</p>
+      <p class="body">
+        Di sini adalah tempat saya mengeksplor hal-hal yang terlintas di pikiran saya — kadang soal matematika, kadang soal fisika, kadang cuma rasa penasaran yang pengen dicoba jadi sesuatu yang bisa diklik-klik. Anggap saja ini semacam buku catatan yang kebetulan hidup di web.
+      </p>
 
-  <footer>
-    c(x,t) = m / √(4πDt) · e^(−x²/4Dt), untuk −∞ &lt; x &lt; ∞, t &gt; 0. Solusi fundamental persamaan difusi 1D dari sumber titik bermassa m di x = 0.
-  </footer>
+      <a class="teaser" href="simulasi-konsentrasi.html">
+        <span class="dot"></span>
+        <span class="txt">
+          <b>Simulasi Konsentrasi Zat</b>
+          <span>proyek pertama — persamaan difusi titik-sumber, interaktif</span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+
+      <p class="signoff">— masih terus dirapikan, mampir lagi nanti.</p>
+    </div>
+  </main>
 
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    katex.render(
-      "c(x,t)=\\dfrac{m}{\\sqrt{4\\pi D t}}\\,e^{-x^2/4Dt}",
-      document.getElementById('eq'),
-      { throwOnError: false }
-    );
-  });
-
-  const mSlider = document.getElementById('mSlider');
-  const DSlider = document.getElementById('DSlider');
-  const tSlider = document.getElementById('tSlider');
-  const mVal = document.getElementById('mVal');
-  const DVal = document.getElementById('DVal');
-  const tVal = document.getElementById('tVal');
-  const tField = document.getElementById('tField');
-  const peakVal = document.getElementById('peakVal');
-  const btn2d = document.getElementById('btn2d');
-  const btn3d = document.getElementById('btn3d');
-  const dragModeSwitch = document.getElementById('dragModeSwitch');
-  const btnOrbit = document.getElementById('btnOrbit');
-  const btnPan = document.getElementById('btnPan');
-
-  let mode = '2d';
-  let camera3dSet = false;
-  const XMAX = 10;
-  const N = 300;
-
-  // kunci sumbu: sekali axis punya nilai (auto atau hasil zoom pengguna),
-  // Plotly akan mempertahankannya lintas pemanggilan react selama
-  // uirevision sama — persis seperti sumbu tetap di GeoGebra.
-  const UI_REV_2D = 'nt-sky-2d';
-  const UI_REV_3D = 'nt-sky-3d';
-
-  function c(x, t, m, D){
-    return (m / Math.sqrt(4 * Math.PI * D * t)) * Math.exp(-(x*x) / (4 * D * t));
-  }
-
-  function linspace(a, b, n){
-    const out = new Array(n);
-    for (let i = 0; i < n; i++) out[i] = a + (b - a) * i / (n - 1);
-    return out;
-  }
-
-  function fmt(n){ return n.toFixed(2); }
-
-  function currentVals(){
-    return {
-      m: parseFloat(mSlider.value),
-      D: parseFloat(DSlider.value),
-      t: parseFloat(tSlider.value)
-    };
-  }
-
-  function draw2D(){
-    const { m, D, t } = currentVals();
-    const xs = linspace(-XMAX, XMAX, N);
-    const ys = xs.map(x => c(x, t, m, D));
-
-    const trace = {
-      x: xs, y: ys,
-      type: 'scatter', mode: 'lines',
-      line: { color: '#e1222c', width: 3, shape: 'spline' },
-      fill: 'tozeroy',
-      fillcolor: 'rgba(225,34,44,0.08)',
-      hovertemplate: 'x=%{x:.2f}<br>c=%{y:.4f}<extra></extra>'
-    };
-
-    const layout = baseLayout(UI_REV_2D, {
-      xaxis: { title: 'x', range: [-XMAX, XMAX], gridcolor: '#eeeeee', zerolinecolor: '#cccccc', color: '#767676' },
-      yaxis: { title: 'c(x, t)', range: [0, 5], gridcolor: '#eeeeee', zerolinecolor: '#cccccc', color: '#767676' }
-    });
-
-    Plotly.react('plot', [trace], layout, plotConfig());
-    peakVal.textContent = fmt(c(0, t, m, D));
-  }
-
-  function draw3D(){
-    const { m, D, t } = currentVals();
-    const xs = linspace(-XMAX, XMAX, 90);
-    const ts = linspace(0.05, 10, 90);
-
-    const z = ts.map(tt => xs.map(x => c(x, tt, m, D)));
-
-    const surfaceTrace = {
-      x: xs, y: ts, z: z,
-      type: 'surface',
-      colorscale: [
-        [0, '#0d6efd'],
-        [0.35, '#22b8d8'],
-        [0.7, '#a9d96b'],
-        [1, '#ffe14d']
-      ],
-      cmin: 0,
-      cmax: 1,
-      showscale: true,
-      colorbar: {
-        title: { text: 'c', font: { color: '#767676', size: 12 } },
-        outlinewidth: 0,
-        thickness: 14,
-        len: 0.7,
-        tickvals: [0, 0.25, 0.5, 0.75, 1],
-        tickfont: { color: '#767676', size: 10 }
-      },
-      contours: { z: { show: false } }
-    };
-
-    const tSlice = Math.min(Math.max(t, 0.05), 10);
-    const xsSlice = linspace(-XMAX, XMAX, 150);
-    const sliceTrace = {
-      x: xsSlice,
-      y: xsSlice.map(() => tSlice),
-      z: xsSlice.map(x => c(x, tSlice, m, D)),
-      type: 'scatter3d',
-      mode: 'lines',
-      line: { color: '#111111', width: 7 },
-      hoverinfo: 'skip'
-    };
-
-    const scene = {
-      xaxis: { title: 'x', range: [-XMAX, XMAX], color: '#767676', gridcolor: '#e4e4e4', backgroundcolor: 'rgba(0,0,0,0)' },
-      yaxis: { title: 't', range: [0, 10], color: '#767676', gridcolor: '#e4e4e4', backgroundcolor: 'rgba(0,0,0,0)' },
-      zaxis: { title: 'c', range: [0, 5], color: '#767676', gridcolor: '#e4e4e4', backgroundcolor: 'rgba(0,0,0,0)' },
-      aspectmode: 'manual',
-      aspectratio: { x: 1, y: 1, z: 0.6 }
-    };
-    if (!camera3dSet) {
-      scene.camera = { eye: { x: 1.6, y: -1.7, z: 0.9 } };
-      camera3dSet = true;
-    }
-
-    const layout = baseLayout(UI_REV_3D, { scene: scene });
-
-    Plotly.react('plot', [surfaceTrace, sliceTrace], layout, plotConfig());
-    peakVal.textContent = fmt(c(0, t, m, D));
-  }
-
-  function baseLayout(uirevision, extra){
-    return Object.assign({
-      uirevision: uirevision,
-      paper_bgcolor: 'rgba(0,0,0,0)',
-      plot_bgcolor: 'rgba(0,0,0,0)',
-      font: { family: 'Inter, sans-serif', color: '#767676', size: 12 },
-      margin: { l: 55, r: 25, t: 20, b: 50 }
-    }, extra);
-  }
-
-  function plotConfig(){
-    return {
-      responsive: true,
-      scrollZoom: true,
-      displaylogo: false,
-      modeBarButtonsToRemove: ['lasso2d', 'select2d', 'toImage'],
-      displayModeBar: true
-    };
-  }
-
-  function redraw(){
-    mode === '2d' ? draw2D() : draw3D();
-  }
-
-  function syncLabels(){
-    mVal.textContent = fmt(parseFloat(mSlider.value));
-    DVal.textContent = fmt(parseFloat(DSlider.value));
-    tVal.textContent = fmt(parseFloat(tSlider.value));
-  }
-
-  [mSlider, DSlider, tSlider].forEach(s => {
-    s.addEventListener('input', () => { syncLabels(); redraw(); });
-  });
-
-  btn2d.addEventListener('click', () => {
-    mode = '2d';
-    btn2d.classList.add('active');
-    btn3d.classList.remove('active');
-    dragModeSwitch.style.display = 'none';
-    tField.querySelector('label').innerHTML = '<span class="sym">t</span>waktu';
-    redraw();
-  });
-
-  btn3d.addEventListener('click', () => {
-    mode = '3d';
-    btn3d.classList.add('active');
-    btn2d.classList.remove('active');
-    dragModeSwitch.style.display = 'flex';
-    tField.querySelector('label').innerHTML = '<span class="sym">t</span>garis potongan waktu';
-    redraw();
-  });
-
-  btnOrbit.addEventListener('click', () => {
-    btnOrbit.classList.add('active');
-    btnPan.classList.remove('active');
-    Plotly.relayout('plot', { 'scene.dragmode': 'orbit' });
-  });
-
-  btnPan.addEventListener('click', () => {
-    btnPan.classList.add('active');
-    btnOrbit.classList.remove('active');
-    Plotly.relayout('plot', { 'scene.dragmode': 'pan' });
-  });
-
-  document.getElementById('reset').addEventListener('click', () => {
-    mSlider.value = 1; DSlider.value = 1; tSlider.value = 1;
-    syncLabels();
-    // ganti uirevision sesaat supaya sumbu ikut kembali ke posisi awal
-    if (mode === '2d') {
-      const xs = linspace(-XMAX, XMAX, N);
-      const ys = xs.map(x => c(x, 1, 1, 1));
-      Plotly.react('plot', [{
-        x: xs, y: ys, type: 'scatter', mode: 'lines',
-        line: { color: '#e1222c', width: 3, shape: 'spline' },
-        fill: 'tozeroy', fillcolor: 'rgba(225,34,44,0.08)'
-      }], baseLayout(UI_REV_2D + '-reset-' + Date.now(), {
-        xaxis: { title: 'x', range: [-XMAX, XMAX], gridcolor: '#eeeeee', zerolinecolor: '#cccccc', color: '#767676' },
-        yaxis: { title: 'c(x, t)', range: [0, 5], gridcolor: '#eeeeee', zerolinecolor: '#cccccc', color: '#767676' }
-      }), plotConfig());
-      peakVal.textContent = fmt(c(0, 1, 1, 1));
-    } else {
-      redraw();
-    }
-  });
-
-  syncLabels();
-  redraw();
-</script>
 
 </body>
 </html>
