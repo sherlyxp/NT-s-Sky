@@ -61,10 +61,10 @@
   .gallery-item span{ font-size: 12px; color: var(--ink-dim); line-height: 1.5; }
   .gallery-item .gallery-diagram{ margin-bottom: 8px; }
 
-  .mini-diagram{ margin: 12px 0 4px; border: 1px solid var(--panel-line); border-radius: 6px; padding: 8px; background: #fbfbfb; }
+  .mini-diagram{ margin: 12px auto 4px; border: 1px solid var(--panel-line); border-radius: 6px; padding: 8px; background: #fbfbfb; max-width: 280px; }
   .mini-diagram svg{ display: block; width: 100%; height: auto; }
-  .diagram-row{ display: flex; gap: 10px; }
-  .diagram-row .mini-diagram{ flex: 1; margin-top: 12px; }
+  .diagram-row{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .diagram-row .mini-diagram{ flex: 0 1 240px; margin-top: 12px; margin-left: 0; margin-right: 0; }
   .diagram-caption{ font-size: 11px; color: var(--ink-dim); text-align: center; margin-top: 4px; }
   .eq-block{ text-align:center; padding: 16px 10px; margin: 10px 0 16px; border-top: 1px solid var(--panel-line); border-bottom: 1px solid var(--panel-line); }
   .eq-block .katex{ color: var(--red); font-size: 1.05em; }
