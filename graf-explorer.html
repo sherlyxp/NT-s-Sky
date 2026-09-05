@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Graf Explorer — NT's Sky</title>
 <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -57,6 +59,15 @@
   .gallery-item{ border: 1px solid var(--panel-line); border-radius: 4px; padding: 10px 12px; }
   .gallery-item b{ font-family: var(--mono); color: var(--red); font-size: 12.5px; display:block; margin-bottom:3px; }
   .gallery-item span{ font-size: 12px; color: var(--ink-dim); line-height: 1.5; }
+  .gallery-item .gallery-diagram{ margin-bottom: 8px; }
+
+  .mini-diagram{ margin: 12px 0 4px; border: 1px solid var(--panel-line); border-radius: 6px; padding: 8px; background: #fbfbfb; }
+  .mini-diagram svg{ display: block; width: 100%; height: auto; }
+  .diagram-row{ display: flex; gap: 10px; }
+  .diagram-row .mini-diagram{ flex: 1; margin-top: 12px; }
+  .diagram-caption{ font-size: 11px; color: var(--ink-dim); text-align: center; margin-top: 4px; }
+  .eq-block{ text-align:center; padding: 16px 10px; margin: 10px 0 16px; border-top: 1px solid var(--panel-line); border-bottom: 1px solid var(--panel-line); }
+  .eq-block .katex{ color: var(--red); font-size: 1.05em; }
 
   /* ---------- tool head / mode switch ---------- */
   .tool-head{ display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -230,6 +241,9 @@
           <summary>Sirkuit &amp; Lintasan Euler</summary>
           <div class="concept-body">
             <p>Sirkuit Euler adalah jalan tertutup yang melewati <b>setiap sisi tepat satu kali</b> dan kembali ke simpul awal. Menurut teorema Euler, graf terhubung punya sirkuit Euler jika dan hanya jika <b>semua simpulnya berderajat genap</b>. Kalau tepat dua simpul berderajat ganjil, yang ada cuma lintasan Euler (jalan terbuka, tidak kembali ke awal) — bukan sirkuit.</p>
+            <div class="eq-block"><div id="eq-euler"></div></div>
+            <div class="mini-diagram" id="diagram-euler"></div>
+            <div class="diagram-caption">Semua simpul berderajat genap → seluruh sisi bisa dilewati tepat sekali dan kembali ke awal.</div>
             <div class="example-box"><p><b>Contoh nyata:</b> tukang pos yang ingin melewati setiap jalan di komplek tepat sekali lalu kembali ke kantor pos — itu persis mencari sirkuit Euler.</p></div>
           </div>
         </details>
@@ -237,7 +251,10 @@
         <details class="concept">
           <summary>Sirkuit &amp; Lintasan Hamilton</summary>
           <div class="concept-body">
-            <p>Kalau Euler soal melewati setiap <b>sisi</b> sekali, Hamilton soal melewati setiap <b>simpul</b> tepat sekali. Sayangnya tidak ada syarat sederhana seperti teorema Euler untuk ini — satu-satunya cara pasti adalah mencoba semua kemungkinan urutan (pencarian mundur/backtracking), makanya di alat ini pencariannya dibatasi sampai 12 simpul saja.</p>
+            <p>Kalau Euler soal melewati setiap <b>sisi</b> sekali, Hamilton soal melewati setiap <b>simpul</b> tepat sekali. Sayangnya tidak ada syarat sederhana seperti teorema Euler untuk ini — satu-satunya cara pasti adalah mencoba semua kemungkinan urutan (pencarian mundur/backtracking), makanya di alat ini pencariannya dibatasi sampai 12 simpul saja. Ada syarat cukup (bukan syarat perlu) dari teorema Dirac:</p>
+            <div class="eq-block"><div id="eq-hamilton"></div></div>
+            <div class="mini-diagram" id="diagram-hamilton"></div>
+            <div class="diagram-caption">Garis merah = satu sirkuit Hamilton (lewat tiap simpul sekali). Garis abu = sisi lain yang ada tapi tidak dipakai di sirkuit ini.</div>
             <div class="example-box"><p><b>Contoh nyata:</b> ini persis "traveling salesman problem" versi sederhana — sales yang mau mengunjungi tiap kota tepat sekali dan balik ke kota asal.</p></div>
           </div>
         </details>
@@ -246,6 +263,8 @@
           <summary>Bipartit &amp; Multipartit Lengkap</summary>
           <div class="concept-body">
             <p>Graf bipartit bisa dibagi jadi dua kelompok simpul sehingga tiap sisi selalu menghubungkan simpul dari kelompok berbeda (tidak ada sisi di dalam satu kelompok). Diuji dengan pewarnaan dua warna: kalau berhasil diwarnai tanpa ada dua tetangga sewarna, berarti bipartit. Multipartit lengkap adalah perluasannya ke k kelompok, dengan setiap simpul terhubung ke <i>semua</i> simpul di kelompok lain.</p>
+            <div class="mini-diagram" id="diagram-bipartite"></div>
+            <div class="diagram-caption">Dua warna simpul = dua kelompok. Semua sisi selalu menyeberang, tidak ada yang di dalam satu warna.</div>
             <div class="example-box"><p><b>Contoh nyata:</b> penjadwalan — mata kuliah vs slot waktu, di mana sisi berarti "bentrok". Bipartit di sini artinya bisa dipisah jadi dua kelompok tanpa konflik internal.</p></div>
           </div>
         </details>
@@ -254,13 +273,27 @@
           <summary>Pohon, Hutan &amp; Graf Siklik</summary>
           <div class="concept-body">
             <p>Graf disebut <b>siklik</b> kalau ada jalan tertutup yang kembali tanpa mengulang sisi. <b>Pohon</b> adalah graf terhubung tanpa siklus sama sekali — selalu punya tepat |V|−1 sisi. Kalau tidak terhubung tapi tetap tanpa siklus, itu <b>hutan</b> (kumpulan pohon).</p>
+            <div class="mini-diagram" id="diagram-tree"></div>
+            <div class="diagram-caption">6 simpul, 5 sisi, tidak ada jalan yang kembali ke dirinya sendiri — ini pohon.</div>
           </div>
         </details>
 
         <details class="concept">
           <summary>Planaritas</summary>
           <div class="concept-body">
-            <p>Graf planar bisa digambar di bidang datar tanpa ada sisi yang saling silang. Uji eksaknya (Kuratowski/Boyer–Myrvold) rumit, jadi alat ini cuma pakai <b>syarat perlu</b> dari ketaksamaan Euler: graf sederhana planar harus punya E ≤ 3V−6 (atau E ≤ 2V−4 kalau bipartit). Kalau syarat ini dilanggar, pasti bukan planar. Kalau terpenuhi, statusnya "mungkin planar" — bukan jaminan pasti.</p>
+            <p>Graf planar bisa digambar di bidang datar tanpa ada sisi yang saling silang. Uji eksaknya (Kuratowski/Boyer–Myrvold) rumit, jadi alat ini cuma pakai <b>syarat perlu</b> dari ketaksamaan Euler:</p>
+            <div class="eq-block"><div id="eq-planar"></div></div>
+            <p>Kalau syarat ini dilanggar, pasti bukan planar. Kalau terpenuhi, statusnya "mungkin planar" — bukan jaminan pasti.</p>
+            <div class="diagram-row">
+              <div>
+                <div class="mini-diagram" id="diagram-planar-crossed"></div>
+                <div class="diagram-caption">K₄ digambar naif — dua diagonal saling silang.</div>
+              </div>
+              <div>
+                <div class="mini-diagram" id="diagram-planar-clean"></div>
+                <div class="diagram-caption">K₄ yang sama, digambar ulang — nol persilangan. K₄ tetap planar.</div>
+              </div>
+            </div>
           </div>
         </details>
 
@@ -268,30 +301,42 @@
           <summary>Graf Berarah &amp; Turnamen</summary>
           <div class="concept-body">
             <p>Di graf berarah, tiap sisi punya arah. Konsep terhubungnya jadi dua: <b>terhubung lemah</b> (terhubung kalau arah sisi diabaikan) dan <b>terhubung kuat</b> (dari simpul mana pun bisa saling dicapai lewat sisi berarah). <b>Turnamen</b> adalah kasus khusus: graf lengkap yang tiap pasangnya punya tepat satu sisi berarah — seperti hasil pertandingan round-robin, tiap dua tim pasti ada satu pemenang.</p>
+            <div class="mini-diagram" id="diagram-tournament"></div>
+            <div class="diagram-caption">3 simpul, tiap pasang punya tepat satu arah — ini turnamen di atas K₃.</div>
           </div>
         </details>
 
         <details class="concept">
           <summary>Isomorfisma Graf</summary>
           <div class="concept-body">
-            <p>Dua graf isomorfik kalau ada cara memetakan simpul graf satu ke simpul graf lain sehingga semua sisi ikut terpetakan persis (dan tidak ada sisi tambahan/hilang). Artinya dua graf itu "sama" secara struktur, walau gambarnya beda. Cara mengeceknya: cocokkan dulu ciri-ciri dasar (banyak simpul, banyak sisi, barisan derajat) — kalau ada yang beda, langsung pasti bukan isomorfik. Kalau semua cocok, baru dicoba dipetakan simpul-ke-simpul satu-satu sampai ketemu satu pemetaan yang konsisten.</p>
+            <p>Dua graf isomorfik kalau ada cara memetakan simpul graf satu ke simpul graf lain sehingga semua sisi ikut terpetakan persis (dan tidak ada sisi tambahan/hilang):</p>
+            <div class="eq-block"><div id="eq-iso"></div></div>
+            <div class="diagram-row">
+              <div class="mini-diagram" id="diagram-iso-a"></div>
+              <div class="mini-diagram" id="diagram-iso-b"></div>
+            </div>
+            <div class="diagram-caption">Dua gambar yang beda bentuk, tapi warna simpul yang sama menunjukkan pemetaan yang membuat keduanya isomorfik (sama-sama siklus C₄).</div>
+            <p>Cara mengeceknya: cocokkan dulu ciri-ciri dasar (banyak simpul, banyak sisi, barisan derajat) — kalau ada yang beda, langsung pasti bukan isomorfik. Kalau semua cocok, baru dicoba dipetakan simpul-ke-simpul satu-satu sampai ketemu satu pemetaan yang konsisten.</p>
           </div>
         </details>
 
         <h2>Galeri graf khusus yang bisa dikenali</h2>
         <div class="gallery-grid">
-          <div class="gallery-item"><b>K_n</b><span>Graf lengkap — semua pasang simpul terhubung</span></div>
-          <div class="gallery-item"><b>C_n</b><span>Graf siklus — semua simpul berderajat 2, membentuk lingkaran</span></div>
-          <div class="gallery-item"><b>P_n</b><span>Graf lintasan — rangkaian simpul lurus tanpa cabang</span></div>
-          <div class="gallery-item"><b>K_m,n</b><span>Bipartit lengkap — dua kelompok, semua pasang lintas kelompok tersambung</span></div>
-          <div class="gallery-item"><b>W_n</b><span>Roda — satu hub tersambung ke seluruh siklus</span></div>
-          <div class="gallery-item"><b>F_n</b><span>Kipas — satu hub tersambung ke seluruh lintasan</span></div>
-          <div class="gallery-item"><b>H_n</b><span>Helm — roda dengan satu daun tambahan di tiap simpul luar</span></div>
-          <div class="gallery-item"><b>G_n</b><span>Gir — roda dengan simpul sisipan di tiap sisi luar</span></div>
-          <div class="gallery-item"><b>Persahabatan (windmill)</b><span>Beberapa segitiga berbagi satu simpul pusat</span></div>
-          <div class="gallery-item"><b>Buku / berlian</b><span>Beberapa segitiga berbagi satu sisi yang sama</span></div>
-          <div class="gallery-item"><b>Tangga, prisma, Möbius, antiprisma</b><span>Dua rangkaian simpul yang disambung berpasangan</span></div>
-          <div class="gallery-item"><b>Petersen</b><span>Graf istimewa 10 simpul, 3-reguler, girth 5 — unik</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Kn" data-n="5"></div><b>K<sub>n</sub></b><span>Graf lengkap — semua pasang simpul terhubung</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Cn" data-n="6"></div><b>C<sub>n</sub></b><span>Graf siklus — semua simpul berderajat 2, membentuk lingkaran</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Pn" data-n="5"></div><b>P<sub>n</sub></b><span>Graf lintasan — rangkaian simpul lurus tanpa cabang</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Kmn" data-m="2" data-k="3"></div><b>K<sub>m,n</sub></b><span>Bipartit lengkap — dua kelompok, semua pasang lintas kelompok tersambung</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Wn" data-n="5"></div><b>W<sub>n</sub></b><span>Roda — satu hub tersambung ke seluruh siklus</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Fn" data-n="4"></div><b>F<sub>n</sub></b><span>Kipas — satu hub tersambung ke seluruh lintasan</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Hn" data-n="4"></div><b>H<sub>n</sub></b><span>Helm — roda dengan satu daun tambahan di tiap simpul luar</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Gn" data-n="4"></div><b>G<sub>n</sub></b><span>Gir — roda dengan simpul sisipan di tiap sisi luar</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Friendship" data-n="3"></div><b>Persahabatan</b><span>Beberapa segitiga berbagi satu simpul pusat (windmill)</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Book" data-n="4"></div><b>Buku / berlian</b><span>Beberapa segitiga berbagi satu sisi yang sama</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Ladder" data-n="4"></div><b>Tangga (L<sub>n</sub>)</b><span>Dua lintasan sejajar disambung tiap pasang</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Prism" data-n="4"></div><b>Prisma (Y<sub>n</sub>)</b><span>Dua siklus sejajar disambung tiap pasang</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Mobius" data-n="4"></div><b>Tangga Möbius</b><span>Siklus dengan sisi "diameter" antar simpul berseberangan</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Antiprism" data-n="4"></div><b>Antiprisma</b><span>Dua siklus sejajar disambung zig-zag</span></div>
+          <div class="gallery-item"><div class="gallery-diagram" data-fam="Petersen"></div><b>Petersen</b><span>Graf istimewa 10 simpul, 3-reguler, girth 5 — unik</span></div>
         </div>
       </div>
     </section>
@@ -802,6 +847,239 @@
     for(let i=0;i<5;i++) cLink(a,i,5+i);
     return a; }
 
+  // =================================================================
+  // Theory-panel visuals: mini SVG diagrams (gallery + concept examples)
+  // =================================================================
+  function miniGraphSVG(adj, opts){
+    opts = opts || {};
+    const W = opts.w || 200, H = opts.h || 120;
+    const ids = Object.keys(adj).map(Number);
+    const n = ids.length;
+    const pos = {};
+    const layout = opts.layout || 'circle';
+    const cx = W/2, cy = H/2 + (opts.cyOffset||0);
+    const R = opts.r || Math.min(W,H)/2 - 22;
+
+    if(layout === 'hub'){
+      const hub = opts.hubIndex===undefined ? 0 : opts.hubIndex;
+      pos[hub] = { x: cx, y: cy };
+      const rest = ids.filter(i=>i!==hub);
+      rest.forEach((id,i)=>{ const a=(2*Math.PI*i)/rest.length - Math.PI/2; pos[id]={x:cx+R*Math.cos(a), y:cy+R*Math.sin(a)}; });
+    } else if(layout === 'bipartite'){
+      const lc = opts.leftCount, rc = opts.rightCount;
+      const stepL = (H-40)/Math.max(lc-1,1), stepR = (H-40)/Math.max(rc-1,1);
+      for(let i=0;i<lc;i++) pos[i] = { x:34, y:20+i*stepL };
+      for(let i=0;i<rc;i++) pos[lc+i] = { x:W-34, y:20+i*stepR };
+    } else if(layout === 'rows'){
+      const half = n/2;
+      const stepX = (W-56)/Math.max(half-1,1);
+      for(let i=0;i<half;i++){ pos[i]={x:28+i*stepX,y:cy-22}; pos[half+i]={x:28+i*stepX,y:cy+22}; }
+    } else if(layout === 'line'){
+      const stepX = (W-56)/Math.max(n-1,1);
+      ids.forEach((id,i)=>{ pos[id]={x:28+i*stepX,y:cy}; });
+    } else if(layout === 'petersen'){
+      for(let i=0;i<5;i++){ const a=(2*Math.PI*i)/5 - Math.PI/2; pos[i]={x:cx+R*Math.cos(a),y:cy+R*Math.sin(a)}; pos[5+i]={x:cx+(R*0.48)*Math.cos(a),y:cy+(R*0.48)*Math.sin(a)}; }
+    } else {
+      ids.forEach((id,i)=>{ const a=(2*Math.PI*i)/n - Math.PI/2; pos[id]={x:cx+R*Math.cos(a), y:cy+R*Math.sin(a)}; });
+    }
+
+    let edgesSvg = '';
+    const seen = new Set();
+    ids.forEach(u => { adj[u].forEach(v => {
+      const k = [Math.min(u,v),Math.max(u,v)].join('-');
+      if(seen.has(k)) return; seen.add(k);
+      edgesSvg += '<line x1="'+pos[u].x+'" y1="'+pos[u].y+'" x2="'+pos[v].x+'" y2="'+pos[v].y+'" stroke="#b9b9b9" stroke-width="1.6"/>';
+    }); });
+    let nodesSvg = '';
+    ids.forEach(id => {
+      const fill = (opts.nodeColors && opts.nodeColors[id]) || '#ffffff';
+      nodesSvg += '<circle cx="'+pos[id].x+'" cy="'+pos[id].y+'" r="6.5" fill="'+fill+'" stroke="#111" stroke-width="1.6"/>';
+    });
+    return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+edgesSvg+nodesSvg+'</svg>';
+  }
+
+  const GALLERY_BUILDERS = {
+    Kn: (n) => { const a=cAdj(n); for(let i=0;i<n;i++) for(let j=i+1;j<n;j++) cLink(a,i,j); return { adj:a, layout:'circle' }; },
+    Cn: (n) => ({ adj: canonCycle(n), layout:'circle' }),
+    Pn: (n) => ({ adj: canonPath(n), layout:'line' }),
+    Kmn: (m,k) => { const a=cAdj(m+k); for(let i=0;i<m;i++) for(let j=0;j<k;j++) cLink(a,i,m+j);
+      const colors={}; for(let i=0;i<m;i++) colors[i]='#faf5f5'; for(let j=0;j<k;j++) colors[m+j]='#ffe9e9';
+      return { adj:a, layout:'bipartite', leftCount:m, rightCount:k, colors }; },
+    Wn: (n) => ({ adj: canonWheel(n), layout:'hub', hubIndex:n }),
+    Fn: (n) => ({ adj: canonFan(n), layout:'hub', hubIndex:n }),
+    Hn: (n) => ({ adj: canonHelm(n), layout:'hub', hubIndex:0 }),
+    Gn: (n) => ({ adj: canonGear(n), layout:'hub', hubIndex:0 }),
+    Friendship: (n) => ({ adj: canonFriendship(n), layout:'hub', hubIndex:0 }),
+    Book: (n) => ({ adj: canonBook(n), layout:'circle' }),
+    Ladder: (n) => ({ adj: canonLadder(n), layout:'rows' }),
+    Prism: (n) => ({ adj: canonPrism(n), layout:'rows' }),
+    Mobius: (n) => ({ adj: canonMobius(n), layout:'rows' }),
+    Antiprism: (n) => ({ adj: canonAntiprism(n), layout:'rows' }),
+    Petersen: () => ({ adj: canonPetersen(), layout:'petersen' })
+  };
+
+  function renderGalleryDiagrams(){
+    document.querySelectorAll('.gallery-diagram').forEach(el => {
+      try{
+        const fam = el.dataset.fam;
+        const builder = GALLERY_BUILDERS[fam];
+        if(!builder) return;
+        const n = el.dataset.n ? parseInt(el.dataset.n,10) : undefined;
+        const m = el.dataset.m ? parseInt(el.dataset.m,10) : undefined;
+        const k = el.dataset.k ? parseInt(el.dataset.k,10) : undefined;
+        const spec = fam==='Kmn' ? builder(m,k) : builder(n);
+        el.innerHTML = miniGraphSVG(spec.adj, { layout: spec.layout, hubIndex: spec.hubIndex, nodeColors: spec.colors, leftCount: spec.leftCount, rightCount: spec.rightCount, h:90 });
+      } catch(err){
+        console.error('gallery diagram failed for', el.dataset.fam, err);
+      }
+    });
+  }
+
+  function svgArrowDefs(color){
+    return '<defs><marker id="mk-'+color.replace('#','')+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="'+color+'"/></marker></defs>';
+  }
+
+  function safe(fn){ try{ fn(); } catch(err){ console.error('diagram render failed:', err); } }
+
+  function renderConceptDiagrams(){
+    // Euler: C5, whole cycle highlighted as the traversal, arrows show direction
+    safe(function(){
+      const el = document.getElementById('diagram-euler'); if(!el) return;
+      const pts = [[100,15],[138,43],[124,87],[76,87],[62,43]];
+      let s = '<svg viewBox="0 0 200 110">'+svgArrowDefs('#e1222c');
+      for(let i=0;i<5;i++){ const a=pts[i], b=pts[(i+1)%5];
+        s += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#e1222c" stroke-width="2.4" marker-end="url(#mk-e1222c)"/>'; }
+      pts.forEach((p,i)=>{ s += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="7" fill="#fff" stroke="#111" stroke-width="1.6"/><text x="'+p[0]+'" y="'+(p[1]+4)+'" font-size="9" text-anchor="middle" font-family="Inter,sans-serif">'+(i+1)+'</text>'; });
+      s += '</svg>';
+      el.innerHTML = s;
+    });
+
+    // Hamilton: wheel W5 (hub=5), highlight one Hamiltonian cycle
+    safe(function(){
+      const el = document.getElementById('diagram-hamilton'); if(!el) return;
+      const rim = [[100,15],[138,43],[124,87],[76,87],[62,43]];
+      const hub = [100,55];
+      let s = '<svg viewBox="0 0 200 110">'+svgArrowDefs('#e1222c');
+      // gray: all wheel edges
+      for(let i=0;i<5;i++){ const a=rim[i], b=rim[(i+1)%5];
+        s += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#d8d8d8" stroke-width="2"/>'; }
+      for(let i=0;i<5;i++){ s += '<line x1="'+hub[0]+'" y1="'+hub[1]+'" x2="'+rim[i][0]+'" y2="'+rim[i][1]+'" stroke="#d8d8d8" stroke-width="2"/>'; }
+      // red: hub-rim0, rim0-rim1, rim1-rim2, rim2-rim3, rim3-rim4, rim4-hub
+      const redEdges = [[hub,rim[0]],[rim[0],rim[1]],[rim[1],rim[2]],[rim[2],rim[3]],[rim[3],rim[4]],[rim[4],hub]];
+      redEdges.forEach(([a,b]) => { s += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#e1222c" stroke-width="2.6"/>'; });
+      rim.forEach(p => s += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="6.5" fill="#fff" stroke="#111" stroke-width="1.6"/>');
+      s += '<circle cx="'+hub[0]+'" cy="'+hub[1]+'" r="6.5" fill="#ffe9e9" stroke="#e1222c" stroke-width="1.6"/>';
+      s += '</svg>';
+      el.innerHTML = s;
+    });
+
+    // Bipartite: 3 left (white) vs 3 right (red-soft), partial connections
+    safe(function(){
+      const el = document.getElementById('diagram-bipartite'); if(!el) return;
+      const L = [[40,20],[40,55],[40,90]], R = [[160,20],[160,55],[160,90]];
+      const edges = [[0,0],[0,1],[1,1],[1,2],[2,0],[2,2]];
+      let s = '<svg viewBox="0 0 200 110">';
+      edges.forEach(([i,j]) => { s += '<line x1="'+L[i][0]+'" y1="'+L[i][1]+'" x2="'+R[j][0]+'" y2="'+R[j][1]+'" stroke="#b9b9b9" stroke-width="1.6"/>'; });
+      L.forEach(p => s += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="7" fill="#ffffff" stroke="#111" stroke-width="1.6"/>');
+      R.forEach(p => s += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="7" fill="#ffe9e9" stroke="#e1222c" stroke-width="1.6"/>');
+      s += '</svg>';
+      el.innerHTML = s;
+    });
+
+    // Tree: simple branching, 6 nodes
+    safe(function(){
+      const el = document.getElementById('diagram-tree'); if(!el) return;
+      const pos = { root:[100,15], l:[60,55], r:[140,55], l1:[35,95], l2:[80,95], r1:[150,95] };
+      const edges = [['root','l'],['root','r'],['l','l1'],['l','l2'],['r','r1']];
+      let s = '<svg viewBox="0 0 200 110">';
+      edges.forEach(([a,b]) => { s += '<line x1="'+pos[a][0]+'" y1="'+pos[a][1]+'" x2="'+pos[b][0]+'" y2="'+pos[b][1]+'" stroke="#b9b9b9" stroke-width="1.6"/>'; });
+      Object.values(pos).forEach(p => s += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="6.5" fill="#ffffff" stroke="#111" stroke-width="1.6"/>');
+      s += '</svg>';
+      el.innerHTML = s;
+    });
+
+    // Planarity: K4 crossed vs K4 clean
+    safe(function(){
+      const el1 = document.getElementById('diagram-planar-crossed');
+      const el2 = document.getElementById('diagram-planar-clean');
+      if(el1){
+        const p = [[40,20],[160,20],[160,90],[40,90]];
+        let s = '<svg viewBox="0 0 200 110">';
+        const pairs = [[0,1],[1,2],[2,3],[3,0],[0,2],[1,3]];
+        pairs.forEach(([i,j]) => { s += '<line x1="'+p[i][0]+'" y1="'+p[i][1]+'" x2="'+p[j][0]+'" y2="'+p[j][1]+'" stroke="#b9b9b9" stroke-width="1.6"/>'; });
+        s += '<circle cx="100" cy="55" r="3" fill="#e1222c"/>';
+        p.forEach(pt => s += '<circle cx="'+pt[0]+'" cy="'+pt[1]+'" r="6.5" fill="#fff" stroke="#111" stroke-width="1.6"/>');
+        s += '</svg>';
+        el1.innerHTML = s;
+      }
+      if(el2){
+        const p = [[100,18],[162,90],[38,90],[100,62]];
+        let s = '<svg viewBox="0 0 200 110">';
+        const pairs = [[0,1],[1,2],[2,0],[3,0],[3,1],[3,2]];
+        pairs.forEach(([i,j]) => { s += '<line x1="'+p[i][0]+'" y1="'+p[i][1]+'" x2="'+p[j][0]+'" y2="'+p[j][1]+'" stroke="#b9b9b9" stroke-width="1.6"/>'; });
+        p.forEach(pt => s += '<circle cx="'+pt[0]+'" cy="'+pt[1]+'" r="6.5" fill="#fff" stroke="#111" stroke-width="1.6"/>');
+        s += '</svg>';
+        el2.innerHTML = s;
+      }
+    });
+
+    // Tournament: directed triangle
+    safe(function(){
+      const el = document.getElementById('diagram-tournament'); if(!el) return;
+      const p = [[100,20],[160,90],[40,90]];
+      let s = '<svg viewBox="0 0 200 110">'+svgArrowDefs('#111111');
+      const dirs = [[0,1],[1,2],[2,0]];
+      dirs.forEach(([i,j]) => { s += '<line x1="'+p[i][0]+'" y1="'+p[i][1]+'" x2="'+p[j][0]+'" y2="'+p[j][1]+'" stroke="#111" stroke-width="2" marker-end="url(#mk-111111)"/>'; });
+      p.forEach(pt => s += '<circle cx="'+pt[0]+'" cy="'+pt[1]+'" r="7" fill="#fff" stroke="#111" stroke-width="1.6"/>');
+      s += '</svg>';
+      el.innerHTML = s;
+    });
+
+    // Isomorphism: same C4, two different layouts, matching colors
+    safe(function(){
+      const elA = document.getElementById('diagram-iso-a');
+      const elB = document.getElementById('diagram-iso-b');
+      const colors = ['#e1222c','#111111','#767676','#f2b6b6'];
+      if(elA){
+        const p = [[40,20],[160,20],[160,90],[40,90]];
+        let s = '<svg viewBox="0 0 200 110">';
+        for(let i=0;i<4;i++){ const a=p[i], b=p[(i+1)%4]; s += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#b9b9b9" stroke-width="1.6"/>'; }
+        p.forEach((pt,i)=> s += '<circle cx="'+pt[0]+'" cy="'+pt[1]+'" r="7" fill="'+colors[i]+'" stroke="#111" stroke-width="1.2"/>');
+        s += '</svg>';
+        elA.innerHTML = s;
+      }
+      if(elB){
+        const p = [[100,15],[165,55],[100,95],[35,55]];
+        let s = '<svg viewBox="0 0 200 110">';
+        for(let i=0;i<4;i++){ const a=p[i], b=p[(i+1)%4]; s += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#b9b9b9" stroke-width="1.6"/>'; }
+        p.forEach((pt,i)=> s += '<circle cx="'+pt[0]+'" cy="'+pt[1]+'" r="7" fill="'+colors[i]+'" stroke="#111" stroke-width="1.2"/>');
+        s += '</svg>';
+        elB.innerHTML = s;
+      }
+    });
+  }
+
+  function renderTheoryEquations(){
+    if(typeof katex === 'undefined') return;
+    const eqs = {
+      'eq-euler': 'G\\ \\text{terhubung punya sirkuit Euler} \\iff \\deg(v)\\ \\text{genap}\\ \\ \\forall v \\in V',
+      'eq-hamilton': '\\deg(v) \\ge \\dfrac{n}{2}\\ \\ \\forall v \\in V \\ \\implies\\ G\\ \\text{punya sirkuit Hamilton}',
+      'eq-planar': 'E \\le 3V - 6 \\quad \\text{(atau } E \\le 2V-4 \\text{ jika bipartit)}',
+      'eq-iso': 'G \\cong H \\iff \\exists\\, f:V(G)\\to V(H)\\ \\text{bijektif},\\ \\ (u,v)\\in E(G) \\iff (f(u),f(v))\\in E(H)'
+    };
+    Object.keys(eqs).forEach(id => {
+      const el = document.getElementById(id);
+      if(el) katex.render(eqs[id], el, { throwOnError: false, displayMode: true });
+    });
+  }
+
+  function initTheoryVisuals(){
+    renderGalleryDiagrams();
+    renderConceptDiagrams();
+    if(document.readyState === 'complete' || typeof katex !== 'undefined') renderTheoryEquations();
+    else window.addEventListener('load', renderTheoryEquations);
+  }
+
   function reindexAdjacency(nodes, edges){
     const adj = weakAdjacencyOf(nodes, edges);
     const ids = nodes.map(n=>n.id); const idx={}; ids.forEach((id,i)=>idx[id]=i);
@@ -1077,6 +1355,8 @@
   // =================================================================
   let lastActive = null;
   function setLastActive(inst){ lastActive = inst; }
+  let currentMode = 'undirected';
+  let activeSingle = null;
 
   const undirectedInst = createGraphInstance(document.getElementById('hostUndirected'), {
     uid: 'u', directed: false, allowMultiDefault: false,
@@ -1103,10 +1383,9 @@
     onChange: () => { if(currentMode==='iso') renderIsoComparison(isoAInst, isoBInst); }
   });
 
-  let currentMode = 'undirected';
-  let activeSingle = undirectedInst;
   const hostUndirectedEl = document.getElementById('hostUndirected');
   const hostDirectedEl = document.getElementById('hostDirected');
+  activeSingle = undirectedInst;
 
   const modeSwitch = document.getElementById('modeSwitch');
   const viewSingle = document.getElementById('viewSingle');
@@ -1172,6 +1451,7 @@
   });
 
   renderSharedAnalysis(undirectedInst);
+  initTheoryVisuals();
 })();
 </script>
 </body>
