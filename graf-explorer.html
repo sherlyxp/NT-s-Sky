@@ -61,10 +61,10 @@
   .gallery-item span{ font-size: 12px; color: var(--ink-dim); line-height: 1.5; }
   .gallery-item .gallery-diagram{ margin-bottom: 8px; }
 
-  .mini-diagram{ margin: 12px auto 4px; border: 1px solid var(--panel-line); border-radius: 6px; padding: 8px; background: #fbfbfb; max-width: 280px; }
+  .mini-diagram{ margin: 12px 0 4px; border: 1px solid var(--panel-line); border-radius: 6px; padding: 8px; background: #fbfbfb; }
   .mini-diagram svg{ display: block; width: 100%; height: auto; }
-  .diagram-row{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .diagram-row .mini-diagram{ flex: 0 1 240px; margin-top: 12px; margin-left: 0; margin-right: 0; }
+  .diagram-row{ display: flex; gap: 10px; }
+  .diagram-row .mini-diagram{ flex: 1; margin-top: 12px; }
   .diagram-caption{ font-size: 11px; color: var(--ink-dim); text-align: center; margin-top: 4px; }
   .eq-block{ text-align:center; padding: 16px 10px; margin: 10px 0 16px; border-top: 1px solid var(--panel-line); border-bottom: 1px solid var(--panel-line); }
   .eq-block .katex{ color: var(--red); font-size: 1.05em; }
@@ -105,6 +105,24 @@
   .gx-toggle.on{ color: var(--ink); border-color: var(--red); }
   .gx-toggle.on .dot{ background: var(--red); }
 
+  .gx-naming{ display: flex; gap: 6px; margin-bottom: 16px; background: #f4f4f4; padding: 3px; border-radius: 4px; }
+  .gx-naming button{ flex:1; background:transparent; border:none; color:var(--ink-dim); font-family:var(--sans); font-size:12px; font-weight:500; padding:6px 2px; border-radius:3px; cursor:pointer; }
+  .gx-naming button.active{ background: var(--black); color:#fff; }
+
+  .gx-input-set{ margin-top: 4px; }
+  .gx-input-set textarea{
+    width: 100%; min-height: 62px; resize: vertical; border: 1px solid var(--panel-line); border-radius: 4px;
+    padding: 8px; font-family: var(--mono); font-size: 11.5px; color: var(--ink); margin-bottom: 8px; box-sizing: border-box;
+  }
+  .gx-input-set .gx-hint-small{ font-size: 10.5px; color: var(--ink-dim); margin-bottom: 6px; line-height:1.5; }
+
+  .gx-select-row{ display:flex; gap:8px; align-items:center; margin-bottom: 10px; }
+  .gx-select-row select{ flex:1; border:1px solid var(--panel-line); border-radius:4px; padding:7px; font-family:var(--sans); font-size:12.5px; color:var(--ink); background:#fff; }
+  .gx-select-row span{ font-size:11px; color:var(--ink-dim); }
+
+  .gx-coloring-swatch{ display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:12px; margin: 3px 8px 3px 0; }
+  .gx-coloring-swatch i{ width:11px; height:11px; border-radius:50%; display:inline-block; border:1px solid #111; }
+
   .canvas-slot{ min-width: 0; }
   .canvas-host{ position: relative; background: var(--panel); border: 1px solid var(--panel-line); border-radius: 4px; height: 460px; }
   .gx-canvas-wrap{ position: absolute; inset: 0; }
@@ -129,6 +147,8 @@
   .gx-node-circle{ fill: #ffffff; stroke: var(--black); stroke-width: 2; }
   .gx-node-circle.pending{ fill: var(--red-soft); stroke: var(--red); }
   .gx-node-label{ fill: var(--black); font-family: var(--sans); font-size: 12.5px; font-weight: 600; pointer-events: none; user-select: none; }
+  .gx-node-weight{ fill: var(--ink-dim); font-family: var(--mono); font-size: 10px; pointer-events: none; user-select: none; }
+  .gx-edge-weight{ fill: var(--red); font-family: var(--mono); font-size: 10.5px; font-weight:600; pointer-events: none; user-select: none; }
   .gx-edge-line{ stroke: #9a9a9a; stroke-width: 1.8; fill: none; }
   .gx-edge-line.selected{ stroke: var(--red); stroke-width: 2.6; }
   .gx-edge-hit{ stroke: transparent; stroke-width: 16; fill: none; cursor: pointer; }
@@ -347,33 +367,49 @@
     </div>
 
     <div class="mode-switch" id="modeSwitch">
-      <button data-mode="undirected" class="active">Graf Tak Berarah</button>
-      <button data-mode="directed">Graf Berarah</button>
+      <button data-mode="undirected" class="active">Tak Berarah</button>
+      <button data-mode="directed">Berarah</button>
+      <button data-mode="colored">Berwarna</button>
       <button data-mode="iso">Isomorfisme</button>
+      <button data-mode="amalgam">Amalgamasi</button>
     </div>
 
     <div id="viewSingle">
       <div class="layout">
         <div class="panel">
+          <div class="gx-naming" id="namingSwitch">
+            <button data-style="alpha" class="active">A, B, C…</button>
+            <button data-style="indexed">V₁, V₂, V₃…</button>
+          </div>
           <div class="gx-toggle" id="toggleMulti"><span class="dot"></span> Izinkan multi-edge / loop</div>
+          <button class="gx-btn" id="btnAutoColor" style="display:none;">Warnai otomatis</button>
           <button class="gx-btn" id="btnUndoSingle">↶ Undo</button>
           <button class="gx-btn" id="btnRandomSingle">Graf acak</button>
           <button class="gx-btn danger" id="btnClearSingle">Bersihkan</button>
+          <details class="gx-input-set">
+            <summary style="cursor:pointer;font-size:12.5px;color:var(--ink-dim);margin-bottom:8px;">Input himpunan V, E</summary>
+            <div class="gx-hint-small">Contoh:<br>V = {A,B,C}<br>E = {(A,B),(B,C),(A,C)}</div>
+            <textarea id="setInputSingle" placeholder="V = {A,B,C}&#10;E = {(A,B),(B,C)}"></textarea>
+            <button class="gx-btn" id="btnDrawSetSingle">Gambar dari himpunan</button>
+          </details>
         </div>
         <div class="canvas-slot">
           <div class="canvas-host" id="hostUndirected"></div>
           <div class="canvas-host" id="hostDirected" style="display:none;"></div>
+          <div class="canvas-host" id="hostColored" style="display:none;"></div>
         </div>
       </div>
-      <div class="panel analysis-panel">
+      <div class="panel analysis-panel" id="sharedAnalysisPanel">
         <div class="tabs">
           <div class="tab active" data-tab="tabProps">Properti</div>
           <div class="tab" data-tab="tabMatrix">Matriks</div>
           <div class="tab" data-tab="tabEdges">Daftar sisi</div>
+          <div class="tab" data-tab="tabColoring" id="tabColoringBtn" style="display:none;">Pewarnaan</div>
         </div>
         <div class="tab-content active" id="tabProps"></div>
         <div class="tab-content" id="tabMatrix"></div>
         <div class="tab-content" id="tabEdges"></div>
+        <div class="tab-content" id="tabColoring"></div>
       </div>
     </div>
 
@@ -401,7 +437,54 @@
       <div class="panel analysis-panel iso-result" id="isoResult"></div>
     </div>
 
+    <div id="viewAmalgam" style="display:none;">
+      <div class="iso-grid">
+        <div class="iso-col">
+          <div class="iso-label">Graf 1</div>
+          <div class="iso-toolbar">
+            <button id="btnUndoAmA">↶ Undo</button>
+            <button id="btnRandomAmA">Acak</button>
+            <button id="btnClearAmA">Bersihkan</button>
+          </div>
+          <div class="canvas-host iso-canvas-host" id="amalgamACanvasHost"></div>
+        </div>
+        <div class="iso-col">
+          <div class="iso-label">Graf 2</div>
+          <div class="iso-toolbar">
+            <button id="btnUndoAmB">↶ Undo</button>
+            <button id="btnRandomAmB">Acak</button>
+            <button id="btnClearAmB">Bersihkan</button>
+          </div>
+          <div class="canvas-host iso-canvas-host" id="amalgamBCanvasHost"></div>
+        </div>
+      </div>
+      <div class="panel" style="margin-bottom:22px;">
+        <div class="gx-select-row">
+          <span>Titik penempel di Graf 1</span>
+          <select id="amalgamSelectA"></select>
+        </div>
+        <div class="gx-select-row">
+          <span>Titik penempel di Graf 2</span>
+          <select id="amalgamSelectB"></select>
+        </div>
+        <button class="gx-btn" id="btnAmalgamate">Gabungkan (Amalgamasi)</button>
+        <div style="font-size:11.5px;color:var(--ink-dim);margin-top:6px;line-height:1.5;">Kedua titik yang dipilih akan melebur jadi satu titik di graf hasil — titik lain dari Graf 2 ditandai tanda kutip (') untuk membedakan dari Graf 1.</div>
+      </div>
+      <div class="canvas-host" id="hostAmalgamResult" style="margin-bottom:22px;"></div>
+      <div class="panel analysis-panel" id="amalgamAnalysisPanel">
+        <div class="tabs">
+          <div class="tab active" data-tab="tabPropsAm">Properti</div>
+          <div class="tab" data-tab="tabMatrixAm">Matriks</div>
+          <div class="tab" data-tab="tabEdgesAm">Daftar sisi</div>
+        </div>
+        <div class="tab-content active" id="tabPropsAm"></div>
+        <div class="tab-content" id="tabMatrixAm"></div>
+        <div class="tab-content" id="tabEdgesAm"></div>
+      </div>
+    </div>
+
   </main>
+
 </div>
 
 <script>
@@ -412,10 +495,13 @@
   // Graph instance factory — every canvas (tak berarah / berarah /
   // isomorfisme A / isomorfisme B) is one independent instance of this.
   // =================================================================
+  const COLOR_PALETTE = ['#e1222c','#2b6cb0','#2f855a','#d69e2e','#805ad5','#dd6b20','#319795','#718096'];
+
   function createGraphInstance(hostEl, opts){
     opts = opts || {};
     const directed = !!opts.directed;
     let allowMulti = !!opts.allowMultiDefault;
+    let namingStyle = opts.namingStyle || 'alpha'; // 'alpha' | 'indexed'
     let nodes = [], edges = [];
     let nextNodeId = 1, nextEdgeId = 1;
     let pendingNode = null, selectedEdge = null;
@@ -443,8 +529,21 @@
       while(i > 0){ const rem = (i-1)%26; s = String.fromCharCode(65+rem)+s; i = Math.floor((i-1)/26); }
       return s;
     }
-    function nextLabel(){ return labelForIndex(nodes.length); }
+    function nextLabel(){
+      return namingStyle === 'indexed' ? ('V'+(nodes.length+1)) : labelForIndex(nodes.length);
+    }
     function nodeById(id){ return nodes.find(n => n.id === id); }
+
+    function relabelAuto(){
+      // regenerate auto labels (skip nodes the user renamed manually) to match the current naming style
+      let counter = 0;
+      nodes.forEach(n => {
+        if(n.customLabel) { counter++; return; }
+        n.label = namingStyle === 'indexed' ? ('V'+(counter+1)) : labelForIndex(counter);
+        counter++;
+      });
+    }
+    function setNamingStyle(style){ namingStyle = style; relabelAuto(); render(); }
 
     function snapshot(){
       history.push(JSON.stringify({ nodes, edges, nextNodeId, nextEdgeId }));
@@ -460,7 +559,7 @@
 
     function addNode(x, y){
       snapshot();
-      nodes.push({ id: nextNodeId++, label: nextLabel(), x, y });
+      nodes.push({ id: nextNodeId++, label: nextLabel(), x, y, weight: null, colorIndex: -1 });
       render();
     }
     function removeNode(id){
@@ -481,7 +580,7 @@
       if(a === b && !allowMulti) return;
       if(!allowMulti && edgeExists(a,b)) return;
       snapshot();
-      edges.push({ id: nextEdgeId++, a, b });
+      edges.push({ id: nextEdgeId++, a, b, weight: null });
       render();
     }
     function removeEdge(id){
@@ -505,7 +604,7 @@
       const created = [];
       for(let i=0;i<n;i++){
         const angle = (2*Math.PI*i)/n - Math.PI/2;
-        created.push({ id: nextNodeId++, label: labelForIndex(i), x: cx+R*Math.cos(angle), y: cy+R*Math.sin(angle) });
+        created.push({ id: nextNodeId++, label: namingStyle==='indexed'?('V'+(i+1)):labelForIndex(i), x: cx+R*Math.cos(angle), y: cy+R*Math.sin(angle), weight:null, colorIndex:-1 });
       }
       nodes = created;
       const density = 0.3 + Math.random()*0.25;
@@ -513,10 +612,66 @@
         for(let j=0;j<n;j++){
           if(i===j) continue;
           if(!directed && j<i) continue;
-          if(Math.random() < density) edges.push({ id: nextEdgeId++, a: created[i].id, b: created[j].id });
+          if(Math.random() < density) edges.push({ id: nextEdgeId++, a: created[i].id, b: created[j].id, weight:null });
         }
       }
       render();
+    }
+    function loadGraph(nodesArr, edgesArr){
+      snapshot();
+      nodes = nodesArr.map(n => Object.assign({ weight:null, colorIndex:-1 }, n));
+      edges = edgesArr.map(e => Object.assign({ weight:null }, e));
+      nextNodeId = (nodes.length ? Math.max.apply(null, nodes.map(n=>n.id)) : 0) + 1;
+      nextEdgeId = (edges.length ? Math.max.apply(null, edges.map(e=>e.id)) : 0) + 1;
+      render();
+    }
+    function loadFromSets(labels, pairs){
+      const rect = svg.getBoundingClientRect();
+      const w = rect.width || 400, h = rect.height || 300, cx=w/2, cy=h/2, R=Math.min(w,h)/2-46;
+      const idOf = {};
+      const newNodes = labels.map((lab,i) => {
+        const angle=(2*Math.PI*i)/labels.length - Math.PI/2;
+        const id = i+1;
+        idOf[lab] = id;
+        return { id, label: lab, customLabel:true, x: cx+R*Math.cos(angle), y: cy+R*Math.sin(angle) };
+      });
+      const newEdges = pairs.map((p,i) => ({ id:i+1, a: idOf[p[0]], b: idOf[p[1]] }));
+      loadGraph(newNodes, newEdges);
+    }
+
+    function renameNode(id, newLabel){
+      snapshot();
+      const n = nodeById(id);
+      if(n){ n.label = newLabel; n.customLabel = true; }
+      render();
+    }
+    function setNodeWeight(id, w){
+      snapshot();
+      const n = nodeById(id);
+      if(n) n.weight = (w===null || w===''||isNaN(w)) ? null : parseFloat(w);
+      render();
+    }
+    function setEdgeWeightById(id, w){
+      snapshot();
+      const e = edges.find(e => e.id === id);
+      if(e) e.weight = (w===null || w===''||isNaN(w)) ? null : parseFloat(w);
+      render();
+    }
+    function cycleNodeColor(id){
+      snapshot();
+      const n = nodeById(id);
+      if(!n) return;
+      const cur = (n.colorIndex===undefined || n.colorIndex===null) ? -1 : n.colorIndex;
+      n.colorIndex = (cur+1 >= COLOR_PALETTE.length) ? -1 : cur+1;
+      render();
+    }
+    function autoColor(){
+      const res = chromaticNumberOf(nodes, edges);
+      if(res.k == null) return res;
+      snapshot();
+      nodes.forEach(n => { n.colorIndex = res.coloring[n.id]; });
+      render();
+      return res;
     }
 
     // ---------------- rendering ----------------
@@ -539,7 +694,7 @@
       nodes.forEach(n => drawNode(n));
     }
 
-    function makeHitAndVisible(dPath, e){
+    function makeHitAndVisible(dPath, e, midX, midY){
       const visible = document.createElementNS('http://www.w3.org/2000/svg','path');
       visible.setAttribute('d', dPath);
       visible.setAttribute('class', 'gx-edge-line' + (selectedEdge===e.id ? ' selected':''));
@@ -547,10 +702,26 @@
       const hit = document.createElementNS('http://www.w3.org/2000/svg','path');
       hit.setAttribute('d', dPath);
       hit.setAttribute('class', 'gx-edge-hit');
-      hit.addEventListener('click', ev => { ev.stopPropagation(); selectedEdge = (selectedEdge===e.id)?null:e.id; opts.setLastActive && opts.setLastActive(api); render(); });
+      hit.addEventListener('click', ev => {
+        ev.stopPropagation();
+        opts.setLastActive && opts.setLastActive(api);
+        if(ev.altKey){
+          const val = window.prompt('Bobot sisi ini:', e.weight!=null ? e.weight : '');
+          if(val !== null) setEdgeWeightById(e.id, val);
+          return;
+        }
+        selectedEdge = (selectedEdge===e.id)?null:e.id; render();
+      });
       hit.addEventListener('contextmenu', ev => { ev.preventDefault(); ev.stopPropagation(); removeEdge(e.id); });
       edgeLayer.appendChild(visible);
       edgeLayer.appendChild(hit);
+      if(e.weight != null && midX !== undefined){
+        const wt = document.createElementNS('http://www.w3.org/2000/svg','text');
+        wt.setAttribute('x', midX); wt.setAttribute('y', midY-4);
+        wt.setAttribute('text-anchor','middle'); wt.setAttribute('class','gx-edge-weight');
+        wt.textContent = e.weight;
+        edgeLayer.appendChild(wt);
+      }
     }
 
     function drawEdge(e, idx, total){
@@ -562,29 +733,56 @@
       const mid=(total-1)/2, off=(idx-mid)*20;
       const mx=(sx+ex)/2 - uy*off, my=(sy+ey)/2 + ux*off;
       const d = off===0 ? ('M '+sx+' '+sy+' L '+ex+' '+ey) : ('M '+sx+' '+sy+' Q '+mx+' '+my+' '+ex+' '+ey);
-      makeHitAndVisible(d, e);
+      makeHitAndVisible(d, e, mx, my);
     }
     function drawLoop(e, idx){
       const a = nodeById(e.a); if(!a) return;
       const r = 14 + idx*9;
       const cy = a.y - NODE_R - r;
       const d = 'M '+(a.x-6)+' '+(a.y-NODE_R+2)+' C '+(a.x-r)+' '+cy+', '+(a.x+r)+' '+cy+', '+(a.x+6)+' '+(a.y-NODE_R+2);
-      makeHitAndVisible(d, e);
+      makeHitAndVisible(d, e, a.x, cy);
     }
     function drawNode(n){
       const g = document.createElementNS('http://www.w3.org/2000/svg','g');
       g.setAttribute('transform', 'translate('+n.x+','+n.y+')');
       const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
       circle.setAttribute('r', NODE_R);
+      const colorFill = (opts.allowColoring && n.colorIndex!=null && n.colorIndex>=0) ? COLOR_PALETTE[n.colorIndex] : null;
       circle.setAttribute('class', 'gx-node-circle' + (pendingNode===n.id ? ' pending':''));
+      if(colorFill){ circle.setAttribute('fill', colorFill); circle.setAttribute('stroke', '#111'); }
       const text = document.createElementNS('http://www.w3.org/2000/svg','text');
       text.setAttribute('class','gx-node-label'); text.setAttribute('text-anchor','middle'); text.setAttribute('dy','0.32em');
+      if(colorFill) text.setAttribute('fill', '#ffffff');
       text.textContent = n.label;
       g.appendChild(circle); g.appendChild(text);
+      if(n.weight != null){
+        const wt = document.createElementNS('http://www.w3.org/2000/svg','text');
+        wt.setAttribute('class','gx-node-weight'); wt.setAttribute('text-anchor','middle'); wt.setAttribute('y', NODE_R+13);
+        wt.textContent = '('+n.weight+')';
+        g.appendChild(wt);
+      }
       g.style.cursor = 'pointer';
-      g.addEventListener('mousedown', ev => { ev.stopPropagation(); opts.setLastActive && opts.setLastActive(api); dragNode=n.id; dragMoved=false; dragStart={x:ev.clientX,y:ev.clientY}; });
+      g.addEventListener('mousedown', ev => {
+        ev.stopPropagation();
+        if(ev.altKey){
+          const val = window.prompt('Bobot simpul '+n.label+':', n.weight!=null?n.weight:'');
+          if(val !== null) setNodeWeight(n.id, val);
+          return;
+        }
+        if(ev.shiftKey && opts.allowColoring){ cycleNodeColor(n.id); return; }
+        opts.setLastActive && opts.setLastActive(api);
+        dragNode=n.id; dragMoved=false; dragStart={x:ev.clientX,y:ev.clientY};
+      });
       g.addEventListener('click', ev => ev.stopPropagation());
-      g.addEventListener('dblclick', ev => { ev.stopPropagation(); if(allowMulti) addEdge(n.id,n.id); });
+      g.addEventListener('dblclick', ev => {
+        ev.stopPropagation();
+        if(ev.ctrlKey || ev.metaKey){
+          const val = window.prompt('Nama baru untuk simpul ini:', n.label);
+          if(val) renameNode(n.id, val);
+          return;
+        }
+        if(allowMulti) addEdge(n.id,n.id);
+      });
       g.addEventListener('contextmenu', ev => { ev.preventDefault(); ev.stopPropagation(); removeNode(n.id); });
       nodeLayer.appendChild(g);
     }
@@ -620,12 +818,21 @@
     });
 
     function deleteSelectedEdge(){ if(selectedEdge!==null) removeEdge(selectedEdge); }
+    function setSelectedEdgeWeight(){
+      if(selectedEdge===null) return;
+      const e = edges.find(x=>x.id===selectedEdge);
+      if(!e) return;
+      const val = window.prompt('Bobot sisi ini:', e.weight!=null?e.weight:'');
+      if(val !== null) setEdgeWeightById(e.id, val);
+    }
 
     const api = {
       get nodes(){ return nodes; }, get edges(){ return edges; },
       get directed(){ return directed; },
       get allowMulti(){ return allowMulti; }, setAllowMulti(v){ allowMulti = v; },
-      undo, clear: clearAll, randomGraph, deleteSelectedEdge, render
+      get namingStyle(){ return namingStyle; }, setNamingStyle,
+      undo, clear: clearAll, randomGraph, loadGraph, loadFromSets,
+      deleteSelectedEdge, setSelectedEdgeWeight, autoColor, render
     };
     render();
     return api;
@@ -801,6 +1008,54 @@
       if(uv===vu) return false;
     }
     return true;
+  }
+  const CHROMATIC_VERTEX_LIMIT = 14, CHROMATIC_STEP_LIMIT = 300000;
+  function chromaticNumberOf(nodes, edges){
+    const n = nodes.length;
+    if(n===0) return { k:0, coloring:{} };
+    if(n>CHROMATIC_VERTEX_LIMIT) return { k:null, timeout:true };
+    const ids = nodes.map(nd=>nd.id); const idx={}; ids.forEach((id,i)=>idx[id]=i);
+    const adj = Array.from({length:n},()=>new Set());
+    edges.forEach(e=>{ if(e.a===e.b) return; adj[idx[e.a]].add(idx[e.b]); adj[idx[e.b]].add(idx[e.a]); });
+    const order = Array.from({length:n},(_,i)=>i).sort((a,b)=>adj[b].size-adj[a].size);
+    for(let k=1;k<=n;k++){
+      const color = new Array(n).fill(-1);
+      let steps=0, timedOut=false;
+      function bt(pos){
+        steps++; if(steps>CHROMATIC_STEP_LIMIT){ timedOut=true; return false; }
+        if(pos===n) return true;
+        const u = order[pos];
+        for(let c=0;c<k;c++){
+          let ok=true;
+          for(const v of adj[u]){ if(color[v]===c){ ok=false; break; } }
+          if(!ok) continue;
+          color[u]=c;
+          if(bt(pos+1)) return true;
+          color[u]=-1;
+          if(timedOut) return false;
+        }
+        return false;
+      }
+      const found = bt(0);
+      if(timedOut) return { k:null, timeout:true };
+      if(found){
+        const coloring={}; ids.forEach((id,i)=>coloring[id]=color[i]);
+        return { k, coloring };
+      }
+    }
+    return { k:n, coloring:{} };
+  }
+  function coloringValidityOf(nodes, edges){
+    const invalid = [];
+    edges.forEach(e => {
+      if(e.a===e.b) return;
+      const a=nodes.find(n=>n.id===e.a), b=nodes.find(n=>n.id===e.b);
+      if(!a||!b) return;
+      const ca=(a.colorIndex==null?-1:a.colorIndex), cb=(b.colorIndex==null?-1:b.colorIndex);
+      if(ca>=0 && ca===cb) invalid.push(e.id);
+    });
+    const allColored = nodes.every(n => n.colorIndex!=null && n.colorIndex>=0);
+    return { valid: invalid.length===0, invalidEdges: invalid, allColored };
   }
 
   // ---- canonical named-family constructors + isomorphism engine ----
@@ -1188,11 +1443,12 @@
   // =================================================================
   // Shared analysis panel (used by both "undirected" and "directed" views)
   // =================================================================
-  function renderSharedAnalysis(inst){
+  function renderSharedAnalysis(inst, ids){
+    ids = ids || { props:'tabProps', matrix:'tabMatrix', edges:'tabEdges' };
     const nodes = inst.nodes, edges = inst.edges, directed = inst.directed;
-    const propsEl = document.getElementById('tabProps');
-    const matrixEl = document.getElementById('tabMatrix');
-    const edgesEl = document.getElementById('tabEdges');
+    const propsEl = document.getElementById(ids.props);
+    const matrixEl = document.getElementById(ids.matrix);
+    const edgesEl = document.getElementById(ids.edges);
 
     if(nodes.length===0){
       propsEl.innerHTML = '<div class="gx-empty">Gambar graf di kanvas untuk melihat analisisnya di sini.</div>';
@@ -1288,7 +1544,8 @@
       '<div class="prop-group"><h4>Planaritas (heuristik)</h4>'+
         '<div class="prop-row"><span class="k">Status</span><span class="v">'+planarLabel(planar)+'</span></div>'+
         '<div style="font-size:11.5px;color:var(--ink-dim);margin-top:4px;line-height:1.5;">Hanya syarat perlu (E ≤ 3V−6, atau E ≤ 2V−4 jika bipartit) — bukan uji eksak.</div>'+
-      '</div>';
+      '</div>'+
+      weightStatsHtml(nodes, edges);
 
     const n=nodes.length; const idx={}; nodes.forEach((nd,i)=>idx[nd.id]=i);
     const M = Array.from({length:n},()=>new Array(n).fill(0));
@@ -1310,6 +1567,48 @@
     }
   }
   function nodeById2(nodes, id){ return nodes.find(n=>n.id===id); }
+
+  function weightStatsHtml(nodes, edges){
+    const weightedNodes = nodes.filter(n => n.weight != null);
+    const weightedEdges = edges.filter(e => e.weight != null);
+    if(weightedNodes.length===0 && weightedEdges.length===0) return '';
+    let html = '<div class="prop-group"><h4>Bobot</h4>';
+    if(weightedNodes.length){
+      const total = weightedNodes.reduce((s,n)=>s+n.weight,0);
+      const max = weightedNodes.reduce((a,b)=>b.weight>a.weight?b:a);
+      const min = weightedNodes.reduce((a,b)=>b.weight<a.weight?b:a);
+      html += '<div class="prop-row"><span class="k">Total bobot simpul</span><span class="v">'+total+'</span></div>'+
+        '<div class="prop-row"><span class="k">Simpul terberat</span><span class="v">'+max.label+' ('+max.weight+')</span></div>'+
+        '<div class="prop-row"><span class="k">Simpul teringan</span><span class="v">'+min.label+' ('+min.weight+')</span></div>';
+    }
+    if(weightedEdges.length){
+      const total = weightedEdges.reduce((s,e)=>s+e.weight,0);
+      html += '<div class="prop-row"><span class="k">Total bobot sisi</span><span class="v">'+total+'</span></div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderColoringPanel(inst){
+    const el = document.getElementById('tabColoring');
+    if(!el) return;
+    const nodes = inst.nodes, edges = inst.edges;
+    if(nodes.length===0){ el.innerHTML = '<div class="gx-empty">Gambar graf dulu untuk mewarnainya.</div>'; return; }
+    const res = chromaticNumberOf(nodes, edges);
+    const validity = coloringValidityOf(nodes, edges);
+    let html = '<div class="prop-group"><h4>Bilangan kromatik</h4>';
+    html += '<div class="prop-row"><span class="k">χ(G)</span><span class="v">'+(res.k==null ? '<span class="gx-badge warn">tak tersimpulkan (batas komputasi)</span>' : '<span class="gx-badge yes">'+res.k+'</span>')+'</span></div>';
+    html += '</div><div class="prop-group"><h4>Status pewarnaan saat ini</h4>';
+    if(!validity.allColored){
+      html += '<div class="prop-row"><span class="k">Kelengkapan</span><span class="v"><span class="gx-badge warn">belum semua simpul diwarnai</span></span></div>';
+    }
+    html += '<div class="prop-row"><span class="k">Validitas</span><span class="v">'+(validity.valid ? '<span class="gx-badge yes">valid, tidak ada tetangga sewarna</span>' : '<span class="gx-badge no">'+validity.invalidEdges.length+' sisi menghubungkan simpul sewarna</span>')+'</span></div>';
+    html += '</div><div class="prop-group"><h4>Legenda warna</h4>';
+    COLOR_PALETTE.forEach((c,i) => { html += '<span class="gx-coloring-swatch"><i style="background:'+c+';"></i>warna '+(i+1)+'</span>'; });
+    html += '</div>';
+    html += '<div style="font-size:11.5px;color:var(--ink-dim);line-height:1.6;">Shift+klik simpul untuk ganti warna manual satu per satu, atau tombol "Warnai otomatis" di panel kiri untuk langsung memakai χ(G) warna.</div>';
+    el.innerHTML = html;
+  }
 
   // =================================================================
   // Isomorphism comparison panel
@@ -1358,9 +1657,29 @@
   let currentMode = 'undirected';
   let activeSingle = null;
 
+  function parseSetInput(text){
+    const matches = text.match(/\{[^}]*\}/g);
+    if(!matches || matches.length<2){
+      alert('Format tidak dikenali. Contoh:\nV = {A,B,C}\nE = {(A,B),(B,C)}');
+      return null;
+    }
+    const labels = matches[0].replace(/[{}]/g,'').split(',').map(s=>s.trim()).filter(Boolean);
+    const pairRe = /\(([^,]+),([^)]+)\)/g;
+    const pairs = []; let m;
+    while((m = pairRe.exec(matches[1]))) pairs.push([m[1].trim(), m[2].trim()]);
+    const labelSet = new Set(labels);
+    for(const [a,b] of pairs){
+      if(!labelSet.has(a) || !labelSet.has(b)){
+        alert('Sisi ('+a+','+b+') memuat simpul yang tidak ada di V.');
+        return null;
+      }
+    }
+    return { labels, pairs };
+  }
+
   const undirectedInst = createGraphInstance(document.getElementById('hostUndirected'), {
     uid: 'u', directed: false, allowMultiDefault: false,
-    hintText: '<b>Klik</b> kosong: tambah simpul · <b>klik</b> 2 simpul: buat sisi · <b>seret</b>: pindah · <b>klik kanan</b>: hapus · <b>klik ganda</b> (mode multi): loop',
+    hintText: '<b>Klik</b> kosong: tambah simpul · <b>klik</b> 2 simpul: buat sisi · <b>seret</b>: pindah · <b>klik kanan</b>: hapus · <b>Ctrl+klik ganda</b>: ganti nama · <b>Alt+klik</b>: bobot',
     setLastActive,
     onChange: (inst) => { if(currentMode==='undirected') renderSharedAnalysis(inst); }
   });
@@ -1369,6 +1688,12 @@
     hintText: '<b>Klik</b> kosong: tambah simpul · <b>klik</b> 2 simpul (urut): buat sisi berarah · <b>seret</b>: pindah · <b>klik kanan</b>: hapus',
     setLastActive,
     onChange: (inst) => { if(currentMode==='directed') renderSharedAnalysis(inst); }
+  });
+  const coloredInst = createGraphInstance(document.getElementById('hostColored'), {
+    uid: 'c', directed: false, allowMultiDefault: false, allowColoring: true,
+    hintText: '<b>Shift+klik</b> simpul: ganti warna · <b>klik</b> kosong: tambah simpul · <b>klik</b> 2 simpul: buat sisi',
+    setLastActive,
+    onChange: (inst) => { if(currentMode==='colored'){ renderSharedAnalysis(inst); renderColoringPanel(inst); } }
   });
   const isoAInst = createGraphInstance(document.getElementById('isoACanvasHost'), {
     uid: 'ia', directed: false, allowMultiDefault: false,
@@ -1382,16 +1707,82 @@
     setLastActive,
     onChange: () => { if(currentMode==='iso') renderIsoComparison(isoAInst, isoBInst); }
   });
+  const amalgamAInst = createGraphInstance(document.getElementById('amalgamACanvasHost'), {
+    uid: 'ama', directed: false, allowMultiDefault: false,
+    hintText: 'Gambar graf pertama di sini',
+    setLastActive,
+    onChange: () => { if(currentMode==='amalgam') refreshAmalgamSelects(); }
+  });
+  const amalgamBInst = createGraphInstance(document.getElementById('amalgamBCanvasHost'), {
+    uid: 'amb', directed: false, allowMultiDefault: false,
+    hintText: 'Gambar graf kedua di sini',
+    setLastActive,
+    onChange: () => { if(currentMode==='amalgam') refreshAmalgamSelects(); }
+  });
+  const amalgamResultInst = createGraphInstance(document.getElementById('hostAmalgamResult'), {
+    uid: 'amr', directed: false, allowMultiDefault: false,
+    hintText: 'Hasil amalgamasi muncul di sini — masih bisa diedit manual',
+    setLastActive,
+    onChange: (inst) => { if(currentMode==='amalgam') renderSharedAnalysis(inst, { props:'tabPropsAm', matrix:'tabMatrixAm', edges:'tabEdgesAm' }); }
+  });
+
+  function refreshAmalgamSelects(){
+    const selA = document.getElementById('amalgamSelectA');
+    const selB = document.getElementById('amalgamSelectB');
+    const curA = selA.value, curB = selB.value;
+    selA.innerHTML = amalgamAInst.nodes.map(n => '<option value="'+n.label+'">'+n.label+'</option>').join('') || '<option value="">(belum ada simpul)</option>';
+    selB.innerHTML = amalgamBInst.nodes.map(n => '<option value="'+n.label+'">'+n.label+'</option>').join('') || '<option value="">(belum ada simpul)</option>';
+    if(amalgamAInst.nodes.some(n=>n.label===curA)) selA.value = curA;
+    if(amalgamBInst.nodes.some(n=>n.label===curB)) selB.value = curB;
+  }
+
+  function performAmalgamation(){
+    const labelA = document.getElementById('amalgamSelectA').value;
+    const labelB = document.getElementById('amalgamSelectB').value;
+    if(!labelA || !labelB){ alert('Pilih titik penempel di kedua graf terlebih dahulu.'); return; }
+    const nodeA = amalgamAInst.nodes.find(n=>n.label===labelA);
+    const nodeB = amalgamBInst.nodes.find(n=>n.label===labelB);
+    if(!nodeA || !nodeB) return;
+    let nid = 1;
+    const idMapA = {}, idMapB = {};
+    const newNodes = [];
+    amalgamAInst.nodes.forEach(n => { const id=nid++; idMapA[n.id]=id; newNodes.push({ id, label:n.label, x:n.x, y:n.y, customLabel:true }); });
+    const dx = nodeA.x - nodeB.x, dy = nodeA.y - nodeB.y;
+    amalgamBInst.nodes.forEach(n => {
+      if(n.id === nodeB.id){ idMapB[n.id] = idMapA[nodeA.id]; return; }
+      const id = nid++; idMapB[n.id] = id;
+      const dup = amalgamAInst.nodes.some(an => an.label === n.label);
+      newNodes.push({ id, label: dup ? (n.label+"'") : n.label, x: n.x+dx, y: n.y+dy, customLabel:true });
+    });
+    let eid = 1; const newEdges = [];
+    amalgamAInst.edges.forEach(e => newEdges.push({ id: eid++, a: idMapA[e.a], b: idMapA[e.b] }));
+    amalgamBInst.edges.forEach(e => newEdges.push({ id: eid++, a: idMapB[e.a], b: idMapB[e.b] }));
+    amalgamResultInst.loadGraph(newNodes, newEdges);
+    renderSharedAnalysis(amalgamResultInst, { props:'tabPropsAm', matrix:'tabMatrixAm', edges:'tabEdgesAm' });
+  }
 
   const hostUndirectedEl = document.getElementById('hostUndirected');
   const hostDirectedEl = document.getElementById('hostDirected');
+  const hostColoredEl = document.getElementById('hostColored');
   activeSingle = undirectedInst;
 
   const modeSwitch = document.getElementById('modeSwitch');
   const viewSingle = document.getElementById('viewSingle');
   const viewIso = document.getElementById('viewIso');
+  const viewAmalgam = document.getElementById('viewAmalgam');
   const modeHint = document.getElementById('modeHint');
   const toggleMultiEl = document.getElementById('toggleMulti');
+  const btnAutoColorEl = document.getElementById('btnAutoColor');
+  const tabColoringBtnEl = document.getElementById('tabColoringBtn');
+  const namingSwitchEl = document.getElementById('namingSwitch');
+
+  function resetToPropsTab(){
+    const panel = document.getElementById('sharedAnalysisPanel');
+    panel.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));
+    panel.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+    panel.querySelector('[data-tab="tabProps"]').classList.add('active');
+    document.getElementById('tabProps').classList.add('active');
+  }
 
   modeSwitch.addEventListener('click', (ev) => {
     const btn = ev.target.closest('button[data-mode]');
@@ -1402,32 +1793,57 @@
     modeSwitch.querySelectorAll('button').forEach(b => b.classList.toggle('active', b===btn));
 
     if(mode === 'iso'){
-      viewSingle.style.display = 'none';
+      viewSingle.style.display = 'none'; viewAmalgam.style.display = 'none';
       viewIso.style.display = 'block';
       modeHint.textContent = 'gambar dua graf berbeda, lalu bandingkan hasilnya di panel bawah';
       renderIsoComparison(isoAInst, isoBInst);
+    } else if(mode === 'amalgam'){
+      viewSingle.style.display = 'none'; viewIso.style.display = 'none';
+      viewAmalgam.style.display = 'block';
+      modeHint.textContent = 'pilih titik penempel di kedua graf, lalu gabungkan';
+      refreshAmalgamSelects();
+      renderSharedAnalysis(amalgamResultInst, { props:'tabPropsAm', matrix:'tabMatrixAm', edges:'tabEdgesAm' });
     } else {
-      viewIso.style.display = 'none';
+      viewIso.style.display = 'none'; viewAmalgam.style.display = 'none';
       viewSingle.style.display = 'block';
       modeHint.textContent = 'gambar di kanvas — hasilnya otomatis muncul di panel bawah';
       toggleMultiEl.style.display = '';
-      const inst = mode === 'undirected' ? undirectedInst : directedInst;
+      const inst = mode === 'undirected' ? undirectedInst : mode === 'directed' ? directedInst : coloredInst;
       hostUndirectedEl.style.display = (mode === 'undirected') ? '' : 'none';
       hostDirectedEl.style.display = (mode === 'directed') ? '' : 'none';
+      hostColoredEl.style.display = (mode === 'colored') ? '' : 'none';
       activeSingle = inst;
+      btnAutoColorEl.style.display = (mode === 'colored') ? '' : 'none';
+      tabColoringBtnEl.style.display = (mode === 'colored') ? '' : 'none';
+      if(mode !== 'colored' && tabColoringBtnEl.classList.contains('active')) resetToPropsTab();
       renderSharedAnalysis(inst);
+      if(mode === 'colored') renderColoringPanel(inst);
       toggleMultiEl.classList.toggle('on', inst.allowMulti);
+      namingSwitchEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.style === inst.namingStyle));
     }
   });
 
   toggleMultiEl.addEventListener('click', () => {
-    const inst = currentMode === 'directed' ? directedInst : undirectedInst;
-    inst.setAllowMulti(!inst.allowMulti);
-    toggleMultiEl.classList.toggle('on', inst.allowMulti);
+    activeSingle.setAllowMulti(!activeSingle.allowMulti);
+    toggleMultiEl.classList.toggle('on', activeSingle.allowMulti);
+  });
+  namingSwitchEl.addEventListener('click', (ev) => {
+    const btn = ev.target.closest('button[data-style]');
+    if(!btn) return;
+    namingSwitchEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b===btn));
+    activeSingle.setNamingStyle(btn.dataset.style);
+  });
+  btnAutoColorEl.addEventListener('click', () => {
+    const res = coloredInst.autoColor();
+    if(res.k == null) alert('Graf terlalu besar / kompleks untuk dihitung otomatis dalam batas waktu yang wajar.');
   });
   document.getElementById('btnUndoSingle').addEventListener('click', () => activeSingle.undo());
   document.getElementById('btnRandomSingle').addEventListener('click', () => activeSingle.randomGraph());
   document.getElementById('btnClearSingle').addEventListener('click', () => activeSingle.clear());
+  document.getElementById('btnDrawSetSingle').addEventListener('click', () => {
+    const val = parseSetInput(document.getElementById('setInputSingle').value);
+    if(val) activeSingle.loadFromSets(val.labels, val.pairs);
+  });
 
   document.getElementById('btnUndoA').addEventListener('click', () => isoAInst.undo());
   document.getElementById('btnRandomA').addEventListener('click', () => isoAInst.randomGraph());
@@ -1436,18 +1852,30 @@
   document.getElementById('btnRandomB').addEventListener('click', () => isoBInst.randomGraph());
   document.getElementById('btnClearB').addEventListener('click', () => isoBInst.clear());
 
+  document.getElementById('btnUndoAmA').addEventListener('click', () => amalgamAInst.undo());
+  document.getElementById('btnRandomAmA').addEventListener('click', () => amalgamAInst.randomGraph());
+  document.getElementById('btnClearAmA').addEventListener('click', () => amalgamAInst.clear());
+  document.getElementById('btnUndoAmB').addEventListener('click', () => amalgamBInst.undo());
+  document.getElementById('btnRandomAmB').addEventListener('click', () => amalgamBInst.randomGraph());
+  document.getElementById('btnClearAmB').addEventListener('click', () => amalgamBInst.clear());
+  document.getElementById('btnAmalgamate').addEventListener('click', performAmalgamation);
+
   document.querySelectorAll('.tabs .tab').forEach(t => {
     t.addEventListener('click', () => {
-      document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+      const panel = t.closest('.analysis-panel') || document;
+      panel.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));
+      panel.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
       t.classList.add('active');
-      document.getElementById(t.dataset.tab).classList.add('active');
+      const content = document.getElementById(t.dataset.tab);
+      if(content) content.classList.add('active');
     });
   });
 
   window.addEventListener('keydown', (ev) => {
-    if((ev.key==='Delete' || ev.key==='Backspace') && lastActive){ ev.preventDefault(); lastActive.deleteSelectedEdge(); }
-    if(ev.ctrlKey && ev.key==='z' && lastActive){ ev.preventDefault(); lastActive.undo(); }
+    if(!lastActive) return;
+    if(ev.key==='Delete' || ev.key==='Backspace'){ ev.preventDefault(); lastActive.deleteSelectedEdge(); }
+    if(ev.ctrlKey && ev.key==='z'){ ev.preventDefault(); lastActive.undo(); }
+    if(ev.key==='w' || ev.key==='W'){ lastActive.setSelectedEdgeWeight && lastActive.setSelectedEdgeWeight(); }
   });
 
   renderSharedAnalysis(undirectedInst);
