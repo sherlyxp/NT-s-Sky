@@ -396,7 +396,6 @@
         <div class="canvas-slot">
           <div class="canvas-host" id="hostUndirected"></div>
           <div class="canvas-host" id="hostDirected" style="display:none;"></div>
-          <div class="canvas-host" id="hostColored" style="display:none;"></div>
         </div>
       </div>
       <div class="panel analysis-panel" id="sharedAnalysisPanel">
@@ -1678,22 +1677,21 @@
   }
 
   const undirectedInst = createGraphInstance(document.getElementById('hostUndirected'), {
-    uid: 'u', directed: false, allowMultiDefault: false,
-    hintText: '<b>Klik</b> kosong: tambah simpul · <b>klik</b> 2 simpul: buat sisi · <b>seret</b>: pindah · <b>klik kanan</b>: hapus · <b>Ctrl+klik ganda</b>: ganti nama · <b>Alt+klik</b>: bobot',
+    uid: 'u', directed: false, allowMultiDefault: false, allowColoring: true,
+    hintText: '<b>Klik</b> kosong: tambah simpul · <b>klik</b> 2 simpul: buat sisi · <b>seret</b>: pindah · <b>klik kanan</b>: hapus · <b>Ctrl+klik ganda</b>: ganti nama · <b>Alt+klik</b>: bobot · <b>Shift+klik</b>: warna (mode Berwarna)',
     setLastActive,
-    onChange: (inst) => { if(currentMode==='undirected') renderSharedAnalysis(inst); }
+    onChange: (inst) => {
+      if(currentMode==='undirected' || currentMode==='colored'){
+        renderSharedAnalysis(inst);
+        if(currentMode==='colored') renderColoringPanel(inst);
+      }
+    }
   });
   const directedInst = createGraphInstance(document.getElementById('hostDirected'), {
     uid: 'd', directed: true, allowMultiDefault: false,
     hintText: '<b>Klik</b> kosong: tambah simpul · <b>klik</b> 2 simpul (urut): buat sisi berarah · <b>seret</b>: pindah · <b>klik kanan</b>: hapus',
     setLastActive,
     onChange: (inst) => { if(currentMode==='directed') renderSharedAnalysis(inst); }
-  });
-  const coloredInst = createGraphInstance(document.getElementById('hostColored'), {
-    uid: 'c', directed: false, allowMultiDefault: false, allowColoring: true,
-    hintText: '<b>Shift+klik</b> simpul: ganti warna · <b>klik</b> kosong: tambah simpul · <b>klik</b> 2 simpul: buat sisi',
-    setLastActive,
-    onChange: (inst) => { if(currentMode==='colored'){ renderSharedAnalysis(inst); renderColoringPanel(inst); } }
   });
   const isoAInst = createGraphInstance(document.getElementById('isoACanvasHost'), {
     uid: 'ia', directed: false, allowMultiDefault: false,
@@ -1763,7 +1761,6 @@
 
   const hostUndirectedEl = document.getElementById('hostUndirected');
   const hostDirectedEl = document.getElementById('hostDirected');
-  const hostColoredEl = document.getElementById('hostColored');
   activeSingle = undirectedInst;
 
   const modeSwitch = document.getElementById('modeSwitch');
@@ -1808,10 +1805,9 @@
       viewSingle.style.display = 'block';
       modeHint.textContent = 'gambar di kanvas — hasilnya otomatis muncul di panel bawah';
       toggleMultiEl.style.display = '';
-      const inst = mode === 'undirected' ? undirectedInst : mode === 'directed' ? directedInst : coloredInst;
-      hostUndirectedEl.style.display = (mode === 'undirected') ? '' : 'none';
+      const inst = mode === 'directed' ? directedInst : undirectedInst;
+      hostUndirectedEl.style.display = (mode === 'undirected' || mode === 'colored') ? '' : 'none';
       hostDirectedEl.style.display = (mode === 'directed') ? '' : 'none';
-      hostColoredEl.style.display = (mode === 'colored') ? '' : 'none';
       activeSingle = inst;
       btnAutoColorEl.style.display = (mode === 'colored') ? '' : 'none';
       tabColoringBtnEl.style.display = (mode === 'colored') ? '' : 'none';
@@ -1834,7 +1830,7 @@
     activeSingle.setNamingStyle(btn.dataset.style);
   });
   btnAutoColorEl.addEventListener('click', () => {
-    const res = coloredInst.autoColor();
+    const res = undirectedInst.autoColor();
     if(res.k == null) alert('Graf terlalu besar / kompleks untuk dihitung otomatis dalam batas waktu yang wajar.');
   });
   document.getElementById('btnUndoSingle').addEventListener('click', () => activeSingle.undo());
@@ -1872,6 +1868,8 @@
   });
 
   window.addEventListener('keydown', (ev) => {
+    const tag = (ev.target && ev.target.tagName) || '';
+    if(tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'SELECT' || (ev.target && ev.target.isContentEditable)) return;
     if(!lastActive) return;
     if(ev.key==='Delete' || ev.key==='Backspace'){ ev.preventDefault(); lastActive.deleteSelectedEdge(); }
     if(ev.ctrlKey && ev.key==='z'){ ev.preventDefault(); lastActive.undo(); }
