@@ -13,296 +13,99 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
-  .page-head{
-    margin-bottom: 30px;
-  }
+  .page-head{ margin-bottom: 24px; }
   .page-head .eyebrow{
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 8px;
+    font-size: 11.5px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+    color: var(--red); margin-bottom: 8px;
   }
-  .page-head h1{
-    font-family: var(--slab);
-    font-weight: 700;
-    font-size: 30px;
-    margin: 0 0 8px 0;
-    letter-spacing: -0.3px;
-  }
-  .page-head p{
-    color: var(--ink-dim);
-    font-size: 15px;
-    max-width: 56ch;
-    line-height: 1.6;
-    margin: 0;
-  }
+  .page-head h1{ font-family: var(--slab); font-weight: 700; font-size: 30px; margin: 0 0 8px 0; letter-spacing: -0.3px; }
+  .page-head p{ color: var(--ink-dim); font-size: 15px; max-width: 62ch; line-height: 1.6; margin: 0; }
 
-  /* ---- penjelasan ---- */
-  .explain{
-    border: 1px solid var(--panel-line);
-    border-radius: 6px;
-    padding: 28px 30px;
-    margin-bottom: 34px;
-  }
-
-  .explain h2{
-    font-family: var(--slab);
-    font-weight: 600;
-    font-size: 17px;
-    margin: 0 0 10px 0;
-  }
-  .explain h2:not(:first-child){ margin-top: 26px; }
-
-  .explain p{
-    font-size: 14.5px;
-    line-height: 1.75;
-    color: #333333;
-    margin: 0 0 4px 0;
-  }
-  .explain p + p{ margin-top: 10px; }
-
-  .eq-block{
-    text-align: center;
-    padding: 22px 10px 24px;
-    margin: 4px 0 22px 0;
-    border-top: 1px solid var(--panel-line);
-    border-bottom: 1px solid var(--panel-line);
-  }
-  .eq-block #eq{
-    font-size: 26px;
-    color: var(--red);
-  }
-  .eq-block #eq .katex{ color: var(--red); }
-  .eq-block .eq-caption{
-    margin-top: 10px;
-    font-size: 12px;
-    color: var(--ink-dim);
-  }
-
-  .symbol-grid{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px 22px;
-    margin: 14px 0 4px 0;
-  }
-  @media (max-width: 700px){
-    .symbol-grid{ grid-template-columns: 1fr; }
-  }
-  .symbol-item{
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid #f1f1f1;
-  }
-  .symbol-item .sym{
-    font-family: var(--slab);
-    font-style: italic;
-    font-weight: 600;
-    font-size: 17px;
-    color: var(--black);
-    min-width: 34px;
-    flex-shrink: 0;
-  }
-  .symbol-item .desc{
-    font-size: 13.5px;
-    line-height: 1.55;
-    color: var(--ink-dim);
-  }
-  .symbol-item .desc b{
-    color: var(--ink);
-    font-weight: 600;
-  }
-
-  .example-box{
-    background: #faf5f5;
-    border-left: 3px solid var(--red);
-    padding: 14px 18px;
-    border-radius: 0 4px 4px 0;
-    margin-top: 6px;
-  }
-  .example-box p{ color: var(--ink); }
-  .example-box ul{
-    margin: 8px 0 0 0;
-    padding-left: 18px;
-  }
-  .example-box li{
-    font-size: 14px;
-    line-height: 1.7;
-    color: #333;
-  }
-
-  /* ---- alat interaktif ---- */
-  .tool-head{
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  .tool-head h2{
-    font-family: var(--slab);
-    font-weight: 600;
-    font-size: 18px;
-    margin: 0;
-  }
-  .tool-head span{
-    font-size: 12.5px;
-    color: var(--ink-dim);
-  }
-
-  .layout{
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 28px;
-  }
-  @media (max-width: 900px){
-    .layout{ grid-template-columns: 1fr; }
-  }
-
-  .panel{
-    background: var(--panel);
-    border: 1px solid var(--panel-line);
-    border-radius: 4px;
-    padding: 20px;
-  }
-
-  .mode-switch{
-    display: flex;
-    gap: 6px;
-    margin-bottom: 22px;
-    background: #f4f4f4;
-    padding: 4px;
-    border-radius: 4px;
-  }
+  .mode-switch{ display: flex; gap: 6px; margin-bottom: 26px; background: #f4f4f4; padding: 4px; border-radius: 4px; }
   .mode-switch button{
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--ink-dim);
-    font-family: var(--sans);
-    font-weight: 500;
-    font-size: 13.5px;
-    padding: 8px 0;
-    border-radius: 3px;
-    cursor: pointer;
+    flex: 1; background: transparent; border: none; color: var(--ink-dim); font-family: var(--sans);
+    font-weight: 500; font-size: 13.5px; padding: 9px 4px; border-radius: 3px; cursor: pointer;
     transition: background .15s ease, color .15s ease;
   }
-  .mode-switch button.active{
-    background: var(--black);
-    color: #ffffff;
+  .mode-switch button.active{ background: var(--black); color: #ffffff; }
+
+  /* ---- penjelasan ---- */
+  .explain{ border: 1px solid var(--panel-line); border-radius: 6px; padding: 28px 30px; margin-bottom: 34px; }
+  .explain h2{ font-family: var(--slab); font-weight: 600; font-size: 17px; margin: 0 0 10px 0; }
+  .explain h2:not(:first-child){ margin-top: 26px; }
+  .explain p{ font-size: 14.5px; line-height: 1.75; color: #333333; margin: 0 0 4px 0; }
+  .explain p + p{ margin-top: 10px; }
+  .formula-block{ display: none; }
+  .formula-block.active{ display: block; }
+
+  .eq-block{ text-align: center; padding: 22px 10px 24px; margin: 4px 0 22px 0; border-top: 1px solid var(--panel-line); border-bottom: 1px solid var(--panel-line); }
+  .eq-block .eq-render{ font-size: 24px; }
+  .eq-block .eq-render, .eq-block .eq-render .katex, .eq-block .eq-render .katex *{
+    color: var(--red) !important;
   }
+  .eq-block .eq-caption{ margin-top: 10px; font-size: 12px; color: var(--ink-dim); }
+
+  .symbol-grid{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 22px; margin: 14px 0 4px 0; }
+  @media (max-width: 700px){ .symbol-grid{ grid-template-columns: 1fr; } }
+  .symbol-item{ display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f1f1f1; }
+  .symbol-item .sym{ font-family: var(--slab); font-style: italic; font-weight: 600; font-size: 17px; color: var(--black); min-width: 34px; flex-shrink: 0; }
+  .symbol-item .desc{ font-size: 13.5px; line-height: 1.55; color: var(--ink-dim); }
+  .symbol-item .desc b{ color: var(--ink); font-weight: 600; }
+
+  .example-box{ background: #faf5f5; border-left: 3px solid var(--red); padding: 14px 18px; border-radius: 0 4px 4px 0; margin-top: 6px; }
+  .example-box p{ color: var(--ink); }
+  .example-box ul{ margin: 8px 0 0 0; padding-left: 18px; }
+  .example-box li{ font-size: 14px; line-height: 1.7; color: #333; }
+
+  .kinship-box{ background: #fbfbfb; border: 1px dashed var(--panel-line); border-radius: 6px; padding: 14px 18px; margin-top: 18px; }
+  .kinship-box p{ font-size: 13.5px; color: #333; margin: 0 0 6px 0; }
+  .kinship-box p:last-child{ margin-bottom: 0; }
+
+  /* ---- alat interaktif ---- */
+  .tool-head{ display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .tool-head h2{ font-family: var(--slab); font-weight: 600; font-size: 18px; margin: 0; }
+  .tool-head span{ font-size: 12.5px; color: var(--ink-dim); }
+
+  .layout{ display: grid; grid-template-columns: 280px 1fr; gap: 28px; }
+  @media (max-width: 900px){ .layout{ grid-template-columns: 1fr; } }
+
+  .panel{ background: var(--panel); border: 1px solid var(--panel-line); border-radius: 4px; padding: 20px; }
+
+  .view-switch{ display: flex; gap: 6px; margin-bottom: 22px; background: #f4f4f4; padding: 4px; border-radius: 4px; }
+  .view-switch button{
+    flex: 1; background: transparent; border: none; color: var(--ink-dim); font-family: var(--sans);
+    font-weight: 500; font-size: 13.5px; padding: 8px 0; border-radius: 3px; cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .view-switch button.active{ background: var(--black); color: #ffffff; }
 
   .field{ margin-bottom: 22px; }
   .field:last-of-type{ margin-bottom: 4px; }
+  .field-top{ display:flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .field label{ font-size: 13.5px; color: var(--ink); font-weight: 500; }
+  .field .sym{ font-family: var(--slab); font-style: italic; color: var(--red); margin-right: 5px; }
+  .field .val{ font-family: var(--mono); font-size: 13px; color: var(--red); background: #faf5f5; border: 1px solid var(--panel-line); padding: 2px 8px; border-radius: 3px; }
 
-  .field-top{
-    display:flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
-  }
-  .field label{
-    font-size: 13.5px;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .field .sym{
-    font-family: var(--slab);
-    font-style: italic;
-    color: var(--red);
-    margin-right: 5px;
-  }
-  .field .val{
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--red);
-    background: #faf5f5;
-    border: 1px solid var(--panel-line);
-    padding: 2px 8px;
-    border-radius: 3px;
-  }
-
-  input[type="range"]{
-    -webkit-appearance: none;
-    width: 100%;
-    height: 3px;
-    border-radius: 2px;
-    background: linear-gradient(90deg, #111111, #e1222c);
-    outline: none;
-  }
+  input[type="range"]{ -webkit-appearance: none; width: 100%; height: 3px; border-radius: 2px; background: linear-gradient(90deg, #111111, #e1222c); outline: none; }
   input[type="range"]::-webkit-slider-thumb{
-    -webkit-appearance: none;
-    width: 15px; height: 15px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2.5px solid var(--red);
-    cursor: pointer;
-    margin-top: -6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    -webkit-appearance: none; width: 15px; height: 15px; border-radius: 50%; background: #ffffff;
+    border: 2.5px solid var(--red); cursor: pointer; margin-top: -6px; box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   }
-  input[type="range"]::-moz-range-thumb{
-    width: 13px; height: 13px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2.5px solid var(--red);
-    cursor: pointer;
-  }
+  input[type="range"]::-moz-range-thumb{ width: 13px; height: 13px; border-radius: 50%; background: #ffffff; border: 2.5px solid var(--red); cursor: pointer; }
+  .field .range-labels{ display:flex; justify-content: space-between; font-family: var(--mono); font-size: 10.5px; color: var(--ink-dim); margin-top: 4px; }
 
-  .field .range-labels{
-    display:flex;
-    justify-content: space-between;
-    font-family: var(--mono);
-    font-size: 10.5px;
-    color: var(--ink-dim);
-    margin-top: 4px;
-  }
-
-  .divider{
-    border: none;
-    border-top: 1px solid var(--panel-line);
-    margin: 20px 0;
-  }
-
-  .readout{
-    font-size: 13px;
-    color: var(--ink-dim);
-    line-height: 1.7;
-  }
-  .readout b{
-    color: var(--black);
-    font-family: var(--mono);
-    font-weight: 500;
-  }
+  .divider{ border: none; border-top: 1px solid var(--panel-line); margin: 20px 0; }
+  .readout{ font-size: 13px; color: var(--ink-dim); line-height: 1.7; }
+  .readout b{ color: var(--black); font-family: var(--mono); font-weight: 500; }
 
   #reset{
-    margin-top: 18px;
-    width: 100%;
-    background: transparent;
-    border: 1px solid var(--black);
-    color: var(--black);
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 9px 0;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background .15s ease, color .15s ease;
+    margin-top: 18px; width: 100%; background: transparent; border: 1px solid var(--black); color: var(--black);
+    font-family: var(--sans); font-size: 13px; font-weight: 500; padding: 9px 0; border-radius: 3px;
+    cursor: pointer; transition: background .15s ease, color .15s ease;
   }
-  #reset:hover{
-    background: var(--black);
-    color: #ffffff;
-  }
+  #reset:hover{ background: var(--black); color: #ffffff; }
 
-  .plot-wrap{
-    background: var(--panel);
-    border: 1px solid var(--panel-line);
-    border-radius: 4px;
-    padding: 12px;
-    height: 560px;
-  }
+  .plot-wrap{ background: var(--panel); border: 1px solid var(--panel-line); border-radius: 4px; padding: 12px; height: 560px; }
   #plot{ width: 100%; height: 100%; }
 </style>
 </head>
@@ -318,14 +121,9 @@
 
     <nav>
       <a class="nav-link" href="index.html">Beranda</a>
-
       <div class="nav-label">Eksperimen</div>
-      <a class="nav-link active" href="simulasi-konsentrasi.html">
-        Simulasi Konsentrasi Zat
-      </a>
-      <a class="nav-link" href="graf-explorer.html">
-        Graf Explorer
-      </a>
+      <a class="nav-link active" href="simulasi-konsentrasi.html">Simulasi Konsentrasi Zat</a>
+      <a class="nav-link" href="graf-explorer.html">Graf Explorer</a>
     </nav>
 
     <div class="sidebar-foot">
@@ -338,105 +136,157 @@
     <div class="page-head">
       <div class="eyebrow">Eksperimen · Difusi</div>
       <h1>Simulasi Konsentrasi Zat</h1>
-      <p>Konsentrasi zat yang menyebar dari satu titik sumber pada garis tak hingga, seiring berjalannya waktu.</p>
+      <p>Tiga bentuk sumber zat yang berbeda — titik, tembok tak berhingga, dan balok terbatas — dan bagaimana masing-masing menyebar seiring waktu.</p>
+    </div>
+
+    <div class="mode-switch" id="formulaSwitch">
+      <button data-formula="point" class="active">1. Sumber Titik</button>
+      <button data-formula="step">2. Fungsi Tangga</button>
+      <button data-formula="slab">3. Balok Terbatas</button>
     </div>
 
     <section class="explain">
-      <h2>Rumus ini ngomongin apa?</h2>
-      <p>
-        Bayangkan sejumlah zat dilepaskan sekaligus di satu titik (anggap saja di posisi x = 0) pada saat t = 0. Rumus ini menjawab pertanyaan: <b>seberapa pekat zat itu di posisi x, pada waktu t setelah dilepaskan?</b> Ini adalah solusi baku dari persamaan difusi satu dimensi untuk sumber titik.
-      </p>
 
-      <div class="eq-block">
-        <div id="eq"></div>
-        <div class="eq-caption">solusi fundamental persamaan difusi 1D dari sumber titik bermassa m di x = 0</div>
-      </div>
-
-      <h2>Tiap simbol ngomong apa</h2>
-      <div class="symbol-grid">
-        <div class="symbol-item">
-          <span class="sym">c(x,t)</span>
-          <span class="desc"><b>Konsentrasi</b> — seberapa pekat zatnya, di posisi x dan waktu t.</span>
+      <div class="formula-block active" id="explain-point">
+        <h2>Rumus ini ngomongin apa?</h2>
+        <p>
+          Bayangkan sejumlah zat dilepaskan sekaligus di satu titik (anggap saja di posisi x = 0) pada saat t = 0. Rumus ini menjawab pertanyaan: <b>seberapa pekat zat itu di posisi x, pada waktu t setelah dilepaskan?</b> Ini adalah solusi baku dari persamaan difusi satu dimensi untuk sumber titik.
+        </p>
+        <div class="eq-block">
+          <div class="eq-render" id="eq-point"></div>
+          <div class="eq-caption">solusi fundamental persamaan difusi 1D dari sumber titik bermassa m di x = 0</div>
         </div>
-        <div class="symbol-item">
-          <span class="sym">m</span>
-          <span class="desc"><b>Massa zat</b> — jumlah total zat yang dilepas sekali di awal, di titik sumber.</span>
+        <h2>Tiap simbol ngomong apa</h2>
+        <div class="symbol-grid">
+          <div class="symbol-item"><span class="sym">c(x,t)</span><span class="desc"><b>Konsentrasi</b> — seberapa pekat zatnya, di posisi x dan waktu t.</span></div>
+          <div class="symbol-item"><span class="sym">m</span><span class="desc"><b>Massa zat</b> — jumlah total zat yang dilepas sekali di awal, di titik sumber.</span></div>
+          <div class="symbol-item"><span class="sym">D</span><span class="desc"><b>Koefisien difusi</b> — seberapa cepat zat itu menyebar.</span></div>
+          <div class="symbol-item"><span class="sym">x</span><span class="desc"><b>Jarak</b> dari titik sumber.</span></div>
+          <div class="symbol-item"><span class="sym">t</span><span class="desc"><b>Waktu</b> yang sudah berlalu sejak zat dilepaskan.</span></div>
+          <div class="symbol-item"><span class="sym">e^(...)</span><span class="desc">Faktor <b>eksponensial</b> yang membentuk kurva lonceng (Gaussian).</span></div>
         </div>
-        <div class="symbol-item">
-          <span class="sym">D</span>
-          <span class="desc"><b>Koefisien difusi</b> — seberapa cepat zat itu menyebar. Makin besar D, makin gesit menyebarnya (tergantung mediumnya: udara vs air vs zat kental).</span>
-        </div>
-        <div class="symbol-item">
-          <span class="sym">x</span>
-          <span class="desc"><b>Jarak</b> dari titik sumber (bisa ke kiri atau kanan — sumbernya ada tepat di x = 0).</span>
-        </div>
-        <div class="symbol-item">
-          <span class="sym">t</span>
-          <span class="desc"><b>Waktu</b> yang sudah berlalu sejak zat dilepaskan.</span>
-        </div>
-        <div class="symbol-item">
-          <span class="sym">e^(...)</span>
-          <span class="desc">Faktor <b>eksponensial</b> yang bikin konsentrasi paling tinggi persis di sumber dan makin turun makin jauh — inilah yang membentuk kurva lonceng (Gaussian).</span>
+        <h2>Interpretasinya</h2>
+        <p>Begitu zat baru dilepas, kurvanya tinggi dan sempit — terpusat di sumber. Seiring t membesar, kurva <b>merenggang</b>: makin lebar tapi makin pendek puncaknya. Luas di bawah kurva selalu sama (total massa m tidak hilang, cuma menyebar lebih rata).</p>
+        <h2>Contoh di dunia nyata</h2>
+        <div class="example-box">
+          <ul>
+            <li><b>Setetes tinta</b> di tengah wadah air tenang.</li>
+            <li><b>Parfum</b> yang disemprot di satu sudut ruangan.</li>
+            <li><b>Polutan</b> yang dibuang ke sungai pada satu titik.</li>
+          </ul>
         </div>
       </div>
 
-      <h2>Interpretasinya</h2>
-      <p>
-        Begitu zat baru saja dilepas (t masih sangat kecil), kurvanya tinggi dan sempit — zat masih terpusat di sekitar sumber. Seiring t membesar, kurva itu <b>merenggang</b>: makin melebar tapi makin pendek puncaknya. Ini karena luas di bawah kurva selalu sama, yaitu total massa m — zatnya tidak hilang, cuma menyebar lebih rata. Itu sebabnya di simulasi, kalau kamu naikkan t, kurvanya kelihatan makin datar dan lebar.
-      </p>
-
-      <h2>Contoh di dunia nyata</h2>
-      <p>Pola seperti ini muncul di banyak kejadian sehari-hari:</p>
-      <div class="example-box">
-        <ul>
-          <li><b>Setetes tinta</b> yang diteteskan di tengah wadah air tenang — awalnya pekat di satu titik, lama-lama menyebar merata ke seluruh wadah tapi jadi makin encer.</li>
-          <li><b>Parfum</b> yang disemprot di satu sudut ruangan — menyengat di dekat sumbernya dulu, lalu lama-lama tercium samar di seluruh ruangan.</li>
-          <li><b>Polutan</b> yang dibuang ke sungai pada satu titik — pola persebarannya di sepanjang aliran mirip kurva ini (dalam kasus sederhana tanpa arus).</li>
-        </ul>
+      <div class="formula-block" id="explain-step">
+        <h2>Rumus ini ngomongin apa?</h2>
+        <p>
+          Kasus ini beda total dari sumber titik: bukan titik, tapi <b>tembok tak berhingga</b>. Bayangkan garis yang sangat panjang — separuh kirinya (x&lt;0) penuh zat dengan konsentrasi c₀, separuh kanannya (x&gt;0) kosong sama sekali, dengan batas tajam persis di x=0. Rumus ini menjawab: <b>bagaimana batas tajam itu melunak seiring waktu?</b>
+        </p>
+        <div class="eq-block">
+          <div class="eq-render" id="eq-step"></div>
+          <div class="eq-caption">solusi difusi 1D untuk kondisi awal fungsi tangga (step function)</div>
+        </div>
+        <h2>Tiap simbol ngomong apa</h2>
+        <div class="symbol-grid">
+          <div class="symbol-item"><span class="sym">c(x,t)</span><span class="desc"><b>Konsentrasi</b> di posisi x, waktu t.</span></div>
+          <div class="symbol-item"><span class="sym">c₀</span><span class="desc"><b>Konsentrasi awal</b> di sisi kiri (sisi kanan mulai dari nol).</span></div>
+          <div class="symbol-item"><span class="sym">erf(...)</span><span class="desc">Fungsi <b>galat</b> (error function) — bentuknya sigmoid, dari −1 sampai 1, inilah yang melunakkan batas tajam jadi landai.</span></div>
+          <div class="symbol-item"><span class="sym">D, t</span><span class="desc">Koefisien difusi dan waktu, seperti sebelumnya.</span></div>
+        </div>
+        <h2>Interpretasinya</h2>
+        <p>Di x sangat negatif, c mendekati c₀ (masih penuh). Di x sangat positif, c mendekati 0 (masih kosong). Tepat di x=0, c selalu c₀/2 — berapa pun t-nya, titik tengah itu "adil" selamanya. Seiring t membesar, transisi tajam di x=0 melebar jadi kurva-S yang makin landai.</p>
+        <h2>Contoh di dunia nyata</h2>
+        <div class="example-box">
+          <ul>
+            <li><b>Karburisasi baja</b> — batang berkadar karbon tinggi disambung dengan batang berkadar rendah, lalu karbon berdifusi melewati sambungan.</li>
+            <li><b>Dopan semikonduktor</b> dari sumber konstan di permukaan wafer yang berdifusi masuk ke dalam.</li>
+          </ul>
+        </div>
       </div>
+
+      <div class="formula-block" id="explain-slab">
+        <h2>Rumus ini ngomongin apa?</h2>
+        <p>
+          Ini posisi tengah-tengah antara sumber titik dan tembok tak berhingga: sebuah <b>balok/lapisan dengan lebar terbatas</b>. Zat mengisi penuh (konsentrasi C₀) di rentang −l sampai +l, dan kosong di luar itu. Rumus ini menjawab: <b>bagaimana balok itu menyebar dari kedua tepinya sekaligus?</b>
+        </p>
+        <div class="eq-block">
+          <div class="eq-render" id="eq-slab"></div>
+          <div class="eq-caption">solusi difusi 1D untuk kondisi awal balok (slab) selebar 2l</div>
+        </div>
+        <h2>Tiap simbol ngomong apa</h2>
+        <div class="symbol-grid">
+          <div class="symbol-item"><span class="sym">C₀</span><span class="desc"><b>Konsentrasi awal</b> di dalam balok (dari −l sampai +l).</span></div>
+          <div class="symbol-item"><span class="sym">l</span><span class="desc"><b>Setengah lebar</b> balok awal — baloknya membentang dari −l ke +l.</span></div>
+          <div class="symbol-item"><span class="sym">erf term 1</span><span class="desc">Suku pertama — "tanggung jawab" tepi kanan balok (di x=+l).</span></div>
+          <div class="symbol-item"><span class="sym">erf term 2</span><span class="desc">Suku kedua — "tanggung jawab" tepi kiri balok (di x=−l).</span></div>
+        </div>
+        <h2>Interpretasinya</h2>
+        <p>Begitu t kecil, bentuknya masih mirip kotak (nyaris C₀ di dalam, nyaris 0 di luar, tepinya sedikit melengkung). Makin besar t, dua tepi itu makin melebur ke tengah sampai akhirnya seluruh kurva merata dan turun ke nol (massa totalnya terbatas, menyebar di garis tak hingga).</p>
+        <h2>Contoh di dunia nyata</h2>
+        <div class="example-box">
+          <ul>
+            <li><b>Strip dopan</b> selebar tertentu yang ditanam ke wafer silikon lalu dianil dari kedua tepinya sekaligus.</li>
+            <li><b>Tumpahan zat</b> yang awalnya membentuk genangan memanjang lalu menyebar ke dua arah.</li>
+          </ul>
+        </div>
+        <div class="kinship-box">
+          <p><b>Satu hal menarik:</b> ketiga rumus di halaman ini sebenarnya satu keluarga. Balok terbatas ini adalah "orang tua" dari dua yang lain:</p>
+          <p>— Kalau lebar balok (l) dibikin makin sempit sambil massa totalnya dijaga tetap, ini luruh jadi sumber titik (Fitur 1).</p>
+          <p>— Kalau lebar balok dibikin makin lebar, tiap tepinya berperilaku sendiri-sendiri seperti tembok tak berhingga (Fitur 2). Coba geser l jadi kecil atau besar sekali dan bandingkan sendiri.</p>
+        </div>
+      </div>
+
     </section>
 
     <div class="tool-head">
       <h2>Coba sendiri</h2>
-      <span>geser slider di panel kiri, atau putar/geser tampilan 3D-nya</span>
+      <span id="toolHint">geser slider di panel kiri, atau putar/geser tampilan 3D-nya</span>
     </div>
 
     <div class="layout">
 
       <div class="panel">
-        <div class="mode-switch">
+        <div class="view-switch">
           <button id="btn2d" class="active">Tampilan 2D</button>
           <button id="btn3d">Tampilan 3D</button>
         </div>
 
-        <div class="mode-switch" id="dragModeSwitch" style="display:none; margin-top:-6px; margin-bottom:22px;">
+        <div class="view-switch" id="dragModeSwitch" style="display:none; margin-top:-6px; margin-bottom:22px;">
           <button id="btnOrbit" class="active">Putar tampilan</button>
           <button id="btnPan">Geser tampilan</button>
         </div>
 
-        <div class="field">
-          <div class="field-top">
-            <label><span class="sym">m</span>massa zat</label>
-            <span class="val" id="mVal">1.00</span>
-          </div>
+        <div class="field" id="mField">
+          <div class="field-top"><label><span class="sym">m</span>massa zat</label><span class="val" id="mVal">1.00</span></div>
           <input type="range" id="mSlider" min="0.1" max="20" step="0.1" value="1">
           <div class="range-labels"><span>0.1</span><span>20</span></div>
         </div>
 
+        <div class="field" id="c0Field" style="display:none;">
+          <div class="field-top"><label><span class="sym">c₀</span>konsentrasi awal</label><span class="val" id="c0Val">1.00</span></div>
+          <input type="range" id="c0Slider" min="0.1" max="20" step="0.1" value="1">
+          <div class="range-labels"><span>0.1</span><span>20</span></div>
+        </div>
+
+        <div class="field" id="C0Field" style="display:none;">
+          <div class="field-top"><label><span class="sym">C₀</span>konsentrasi dalam balok</label><span class="val" id="C0Val">1.00</span></div>
+          <input type="range" id="C0Slider" min="0.1" max="20" step="0.1" value="1">
+          <div class="range-labels"><span>0.1</span><span>20</span></div>
+        </div>
+        <div class="field" id="lField" style="display:none;">
+          <div class="field-top"><label><span class="sym">l</span>setengah lebar balok</label><span class="val" id="lVal">2.00</span></div>
+          <input type="range" id="lSlider" min="0.1" max="8" step="0.1" value="2">
+          <div class="range-labels"><span>0.1</span><span>8</span></div>
+        </div>
+
         <div class="field">
-          <div class="field-top">
-            <label><span class="sym">D</span>koefisien difusi</label>
-            <span class="val" id="DVal">1.00</span>
-          </div>
+          <div class="field-top"><label><span class="sym">D</span>koefisien difusi</label><span class="val" id="DVal">1.00</span></div>
           <input type="range" id="DSlider" min="0.05" max="20" step="0.05" value="1">
           <div class="range-labels"><span>0.05</span><span>20</span></div>
         </div>
 
         <div class="field" id="tField">
-          <div class="field-top">
-            <label><span class="sym">t</span>waktu</label>
-            <span class="val" id="tVal">1.00</span>
-          </div>
+          <div class="field-top"><label><span class="sym">t</span>waktu</label><span class="val" id="tVal">1.00</span></div>
           <input type="range" id="tSlider" min="0.05" max="20" step="0.05" value="1">
           <div class="range-labels"><span>0.05</span><span>20</span></div>
         </div>
@@ -444,11 +294,11 @@
         <hr class="divider">
 
         <div class="readout">
-          Puncak <b>c(0,t)</b> saat ini:<br>
+          <span id="readoutLabel">Puncak c(0,t)</span> saat ini:<br>
           <b id="peakVal">—</b>
         </div>
 
-        <button id="reset">Kembalikan nilai & sumbu awal</button>
+        <button id="reset">Kembalikan nilai &amp; sumbu awal</button>
       </div>
 
       <div class="plot-wrap">
@@ -462,220 +312,218 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    katex.render(
-      "c(x,t)=\\dfrac{m}{\\sqrt{4\\pi D t}}\\,e^{-x^2/4Dt}",
-      document.getElementById('eq'),
-      { throwOnError: false }
-    );
+    katex.render("c(x,t)=\\dfrac{m}{\\sqrt{4\\pi D t}}\\,e^{-x^2/4Dt}", document.getElementById('eq-point'), { throwOnError: false });
+    katex.render("c(x,t)=\\dfrac{c_0}{2}\\left(1-\\operatorname{erf}\\left(\\dfrac{x}{\\sqrt{4Dt}}\\right)\\right)", document.getElementById('eq-step'), { throwOnError: false });
+    katex.render("c(x,t)=\\dfrac{C_0}{2}\\left(\\operatorname{erf}\\left(\\dfrac{l-x}{\\sqrt{4Dt}}\\right)+\\operatorname{erf}\\left(\\dfrac{l+x}{\\sqrt{4Dt}}\\right)\\right)", document.getElementById('eq-slab'), { throwOnError: false });
   });
 
-  const mSlider = document.getElementById('mSlider');
-  const DSlider = document.getElementById('DSlider');
-  const tSlider = document.getElementById('tSlider');
-  const mVal = document.getElementById('mVal');
-  const DVal = document.getElementById('DVal');
-  const tVal = document.getElementById('tVal');
-  const tField = document.getElementById('tField');
-  const peakVal = document.getElementById('peakVal');
-  const btn2d = document.getElementById('btn2d');
-  const btn3d = document.getElementById('btn3d');
-  const dragModeSwitch = document.getElementById('dragModeSwitch');
-  const btnOrbit = document.getElementById('btnOrbit');
-  const btnPan = document.getElementById('btnPan');
+  // ---- error function approximation (Abramowitz & Stegun 7.1.26, max error ~1.5e-7) ----
+  function erf(x){
+    const sign = x >= 0 ? 1 : -1;
+    x = Math.abs(x);
+    const a1=0.254829592, a2=-0.284496736, a3=1.421413741, a4=-1.453152027, a5=1.061405429, p=0.3275911;
+    const tt = 1/(1+p*x);
+    const y = 1 - (((((a5*tt+a4)*tt)+a3)*tt+a2)*tt+a1)*tt*Math.exp(-x*x);
+    return sign*y;
+  }
 
+  function cPoint(x,t,m,D){ return (m / Math.sqrt(4*Math.PI*D*t)) * Math.exp(-(x*x)/(4*D*t)); }
+  function cStep(x,t,c0,D){ return (c0/2) * (1 - erf(x/Math.sqrt(4*D*t))); }
+  function cSlab(x,t,C0,l,D){ const denom = Math.sqrt(4*D*t); return (C0/2) * (erf((l-x)/denom) + erf((l+x)/denom)); }
+
+  let formula = 'point'; // 'point' | 'step' | 'slab'
   let mode = '2d';
   let camera3dSet = false;
   const XMAX = 10;
   const N = 300;
 
-  const UI_REV_2D = 'nt-sky-2d';
-  const UI_REV_3D = 'nt-sky-3d';
-
-  function c(x, t, m, D){
-    return (m / Math.sqrt(4 * Math.PI * D * t)) * Math.exp(-(x*x) / (4 * D * t));
-  }
-
-  function linspace(a, b, n){
-    const out = new Array(n);
-    for (let i = 0; i < n; i++) out[i] = a + (b - a) * i / (n - 1);
-    return out;
-  }
-
-  function fmt(n){ return n.toFixed(2); }
+  const mSlider = document.getElementById('mSlider');
+  const c0Slider = document.getElementById('c0Slider');
+  const C0Slider = document.getElementById('C0Slider');
+  const lSlider = document.getElementById('lSlider');
+  const DSlider = document.getElementById('DSlider');
+  const tSlider = document.getElementById('tSlider');
+  const mVal = document.getElementById('mVal');
+  const c0Val = document.getElementById('c0Val');
+  const C0Val = document.getElementById('C0Val');
+  const lVal = document.getElementById('lVal');
+  const DVal = document.getElementById('DVal');
+  const tVal = document.getElementById('tVal');
+  const tField = document.getElementById('tField');
+  const peakVal = document.getElementById('peakVal');
+  const readoutLabel = document.getElementById('readoutLabel');
+  const btn2d = document.getElementById('btn2d');
+  const btn3d = document.getElementById('btn3d');
+  const dragModeSwitch = document.getElementById('dragModeSwitch');
+  const btnOrbit = document.getElementById('btnOrbit');
+  const btnPan = document.getElementById('btnPan');
+  const mField = document.getElementById('mField');
+  const c0Field = document.getElementById('c0Field');
+  const C0Field = document.getElementById('C0Field');
+  const lField = document.getElementById('lField');
+  const toolHint = document.getElementById('toolHint');
 
   function currentVals(){
     return {
       m: parseFloat(mSlider.value),
+      c0: parseFloat(c0Slider.value),
+      C0: parseFloat(C0Slider.value),
+      l: parseFloat(lSlider.value),
       D: parseFloat(DSlider.value),
       t: parseFloat(tSlider.value)
     };
   }
 
+  function computeC(x,t,vals){
+    if(formula==='point') return cPoint(x,t,vals.m,vals.D);
+    if(formula==='step') return cStep(x,t,vals.c0,vals.D);
+    return cSlab(x,t,vals.C0,vals.l,vals.D);
+  }
+  function yMax(vals){
+    if(formula==='point') return 5;
+    if(formula==='step') return Math.max(1, vals.c0*1.08);
+    return Math.max(1, vals.C0*1.08);
+  }
+
+  function linspace(a,b,n){ const out=new Array(n); for(let i=0;i<n;i++) out[i]=a+(b-a)*i/(n-1); return out; }
+  function fmt(n){ return n.toFixed(2); }
+
   function draw2D(){
-    const { m, D, t } = currentVals();
+    const vals = currentVals();
     const xs = linspace(-XMAX, XMAX, N);
-    const ys = xs.map(x => c(x, t, m, D));
-
+    const ys = xs.map(x => computeC(x, vals.t, vals));
     const trace = {
-      x: xs, y: ys,
-      type: 'scatter', mode: 'lines',
-      line: { color: '#e1222c', width: 3, shape: 'spline' },
-      fill: 'tozeroy',
-      fillcolor: 'rgba(225,34,44,0.08)',
-      hovertemplate: 'x=%{x:.2f}<br>c=%{y:.4f}<extra></extra>'
+      x: xs, y: ys, type:'scatter', mode:'lines',
+      line: { color:'#e1222c', width:3, shape:'spline' },
+      fill:'tozeroy', fillcolor:'rgba(225,34,44,0.08)',
+      hovertemplate:'x=%{x:.2f}<br>c=%{y:.4f}<extra></extra>'
     };
-
-    const layout = baseLayout(UI_REV_2D, {
-      xaxis: { title: 'x', range: [-XMAX, XMAX], gridcolor: '#eeeeee', zerolinecolor: '#cccccc', color: '#767676' },
-      yaxis: { title: 'c(x, t)', range: [0, 5], gridcolor: '#eeeeee', zerolinecolor: '#cccccc', color: '#767676' }
+    const layout = baseLayout('nt-sky-2d-'+formula, {
+      xaxis: { title:'x', range:[-XMAX,XMAX], gridcolor:'#eeeeee', zerolinecolor:'#cccccc', color:'#767676' },
+      yaxis: { title:'c(x, t)', range:[0, yMax(vals)], gridcolor:'#eeeeee', zerolinecolor:'#cccccc', color:'#767676' }
     });
-
     Plotly.react('plot', [trace], layout, plotConfig());
-    peakVal.textContent = fmt(c(0, t, m, D));
+    peakVal.textContent = fmt(computeC(0, vals.t, vals));
   }
 
   function draw3D(){
-    const { m, D, t } = currentVals();
+    const vals = currentVals();
     const xs = linspace(-XMAX, XMAX, 90);
     const ts = linspace(0.05, 10, 90);
-
-    const z = ts.map(tt => xs.map(x => c(x, tt, m, D)));
-
+    const z = ts.map(tt => xs.map(x => computeC(x, tt, vals)));
     const surfaceTrace = {
-      x: xs, y: ts, z: z,
-      type: 'surface',
-      colorscale: [
-        [0, '#0d6efd'],
-        [0.35, '#22b8d8'],
-        [0.7, '#a9d96b'],
-        [1, '#ffe14d']
-      ],
-      cmin: 0,
-      cmax: 1,
-      showscale: true,
-      colorbar: {
-        title: { text: 'c', font: { color: '#767676', size: 12 } },
-        outlinewidth: 0,
-        thickness: 14,
-        len: 0.7,
-        tickvals: [0, 0.25, 0.5, 0.75, 1],
-        tickfont: { color: '#767676', size: 10 }
-      },
-      contours: { z: { show: false } }
+      x: xs, y: ts, z: z, type:'surface',
+      colorscale: [[0,'#0d6efd'],[0.35,'#22b8d8'],[0.7,'#a9d96b'],[1,'#ffe14d']],
+      cmin: 0, cmax: yMax(vals), showscale: true,
+      colorbar: { title:{ text:'c', font:{ color:'#767676', size:12 } }, outlinewidth:0, thickness:14, len:0.7, tickfont:{ color:'#767676', size:10 } },
+      contours: { z: { show:false } }
     };
-
-    const tSlice = Math.min(Math.max(t, 0.05), 10);
+    const tSlice = Math.min(Math.max(vals.t, 0.05), 10);
     const xsSlice = linspace(-XMAX, XMAX, 150);
     const sliceTrace = {
-      x: xsSlice,
-      y: xsSlice.map(() => tSlice),
-      z: xsSlice.map(x => c(x, tSlice, m, D)),
-      type: 'scatter3d',
-      mode: 'lines',
-      line: { color: '#111111', width: 7 },
-      hoverinfo: 'skip'
+      x: xsSlice, y: xsSlice.map(()=>tSlice), z: xsSlice.map(x=>computeC(x,tSlice,vals)),
+      type:'scatter3d', mode:'lines', line:{ color:'#111111', width:7 }, hoverinfo:'skip'
     };
-
     const scene = {
-      xaxis: { title: 'x', range: [-XMAX, XMAX], color: '#767676', gridcolor: '#e4e4e4', backgroundcolor: 'rgba(0,0,0,0)' },
-      yaxis: { title: 't', range: [0, 10], color: '#767676', gridcolor: '#e4e4e4', backgroundcolor: 'rgba(0,0,0,0)' },
-      zaxis: { title: 'c', range: [0, 5], color: '#767676', gridcolor: '#e4e4e4', backgroundcolor: 'rgba(0,0,0,0)' },
-      aspectmode: 'manual',
-      aspectratio: { x: 1, y: 1, z: 0.6 }
+      xaxis: { title:'x', range:[-XMAX,XMAX], color:'#767676', gridcolor:'#e4e4e4', backgroundcolor:'rgba(0,0,0,0)' },
+      yaxis: { title:'t', range:[0,10], color:'#767676', gridcolor:'#e4e4e4', backgroundcolor:'rgba(0,0,0,0)' },
+      zaxis: { title:'c', range:[0, yMax(vals)], color:'#767676', gridcolor:'#e4e4e4', backgroundcolor:'rgba(0,0,0,0)' },
+      aspectmode:'manual', aspectratio:{ x:1, y:1, z:0.6 }
     };
-    if (!camera3dSet) {
-      scene.camera = { eye: { x: 1.6, y: -1.7, z: 0.9 } };
-      camera3dSet = true;
-    }
-
-    const layout = baseLayout(UI_REV_3D, { scene: scene });
-
+    if(!camera3dSet){ scene.camera = { eye:{ x:1.6, y:-1.7, z:0.9 } }; camera3dSet = true; }
+    const layout = baseLayout('nt-sky-3d-'+formula, { scene });
     Plotly.react('plot', [surfaceTrace, sliceTrace], layout, plotConfig());
-    peakVal.textContent = fmt(c(0, t, m, D));
+    peakVal.textContent = fmt(computeC(0, vals.t, vals));
   }
 
   function baseLayout(uirevision, extra){
     return Object.assign({
-      uirevision: uirevision,
-      paper_bgcolor: 'rgba(0,0,0,0)',
-      plot_bgcolor: 'rgba(0,0,0,0)',
-      font: { family: 'Inter, sans-serif', color: '#767676', size: 12 },
-      margin: { l: 55, r: 25, t: 20, b: 50 }
+      uirevision, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+      font:{ family:'Inter, sans-serif', color:'#767676', size:12 }, margin:{ l:55, r:25, t:20, b:50 }
     }, extra);
   }
-
   function plotConfig(){
-    return {
-      responsive: true,
-      scrollZoom: true,
-      displaylogo: false,
-      modeBarButtonsToRemove: ['lasso2d', 'select2d', 'toImage'],
-      displayModeBar: true
-    };
+    return { responsive:true, scrollZoom:true, displaylogo:false, modeBarButtonsToRemove:['lasso2d','select2d','toImage'], displayModeBar:true };
   }
-
-  function redraw(){
-    mode === '2d' ? draw2D() : draw3D();
-  }
+  function redraw(){ mode==='2d' ? draw2D() : draw3D(); }
 
   function syncLabels(){
     mVal.textContent = fmt(parseFloat(mSlider.value));
+    c0Val.textContent = fmt(parseFloat(c0Slider.value));
+    C0Val.textContent = fmt(parseFloat(C0Slider.value));
+    lVal.textContent = fmt(parseFloat(lSlider.value));
     DVal.textContent = fmt(parseFloat(DSlider.value));
     tVal.textContent = fmt(parseFloat(tSlider.value));
   }
 
-  [mSlider, DSlider, tSlider].forEach(s => {
-    s.addEventListener('input', () => { syncLabels(); redraw(); });
-  });
+  [mSlider,c0Slider,C0Slider,lSlider,DSlider,tSlider].forEach(s => { s.addEventListener('input', () => { syncLabels(); redraw(); }); });
 
   btn2d.addEventListener('click', () => {
-    mode = '2d';
-    btn2d.classList.add('active');
-    btn3d.classList.remove('active');
-    dragModeSwitch.style.display = 'none';
+    mode='2d'; btn2d.classList.add('active'); btn3d.classList.remove('active');
+    dragModeSwitch.style.display='none';
     tField.querySelector('label').innerHTML = '<span class="sym">t</span>waktu';
     redraw();
   });
-
   btn3d.addEventListener('click', () => {
-    mode = '3d';
-    btn3d.classList.add('active');
-    btn2d.classList.remove('active');
-    dragModeSwitch.style.display = 'flex';
+    mode='3d'; btn3d.classList.add('active'); btn2d.classList.remove('active');
+    dragModeSwitch.style.display='flex';
     tField.querySelector('label').innerHTML = '<span class="sym">t</span>garis potongan waktu';
     redraw();
   });
+  btnOrbit.addEventListener('click', () => { btnOrbit.classList.add('active'); btnPan.classList.remove('active'); Plotly.relayout('plot', {'scene.dragmode':'orbit'}); });
+  btnPan.addEventListener('click', () => { btnPan.classList.add('active'); btnOrbit.classList.remove('active'); Plotly.relayout('plot', {'scene.dragmode':'pan'}); });
 
-  btnOrbit.addEventListener('click', () => {
-    btnOrbit.classList.add('active');
-    btnPan.classList.remove('active');
-    Plotly.relayout('plot', { 'scene.dragmode': 'orbit' });
-  });
+  const formulaDefaults = {
+    point: { m:1, D:1, t:1 },
+    step: { c0:1, D:1, t:1 },
+    slab: { C0:1, l:2, D:1, t:1 }
+  };
+  const readoutLabels = {
+    point: 'Puncak c(0,t)',
+    step: 'Nilai di tengah c(0,t)',
+    slab: 'Puncak c(0,t)'
+  };
+  const toolHints = {
+    point: 'geser slider di panel kiri, atau putar/geser tampilan 3D-nya',
+    step: 'geser slider di panel kiri — perhatikan c(0,t) selalu c₀/2',
+    slab: 'geser l kecil/besar sekali untuk lihat kemiripannya dengan Fitur 1 & 2'
+  };
 
-  btnPan.addEventListener('click', () => {
-    btnPan.classList.add('active');
-    btnOrbit.classList.remove('active');
-    Plotly.relayout('plot', { 'scene.dragmode': 'pan' });
+  function applyDefaults(f){
+    const d = formulaDefaults[f];
+    if(d.m!==undefined) mSlider.value = d.m;
+    if(d.c0!==undefined) c0Slider.value = d.c0;
+    if(d.C0!==undefined) C0Slider.value = d.C0;
+    if(d.l!==undefined) lSlider.value = d.l;
+    DSlider.value = d.D; tSlider.value = d.t;
+    syncLabels();
+  }
+
+  function setFormula(f){
+    formula = f;
+    document.querySelectorAll('#formulaSwitch button').forEach(b => b.classList.toggle('active', b.dataset.formula===f));
+    document.querySelectorAll('.formula-block').forEach(el => el.classList.remove('active'));
+    document.getElementById('explain-'+f).classList.add('active');
+    mField.style.display = (f==='point') ? '' : 'none';
+    c0Field.style.display = (f==='step') ? '' : 'none';
+    C0Field.style.display = (f==='slab') ? '' : 'none';
+    lField.style.display = (f==='slab') ? '' : 'none';
+    readoutLabel.textContent = readoutLabels[f];
+    toolHint.textContent = toolHints[f];
+    camera3dSet = false;
+    redraw();
+  }
+
+  document.getElementById('formulaSwitch').addEventListener('click', (ev) => {
+    const btn = ev.target.closest('button[data-formula]');
+    if(!btn) return;
+    setFormula(btn.dataset.formula);
   });
 
   document.getElementById('reset').addEventListener('click', () => {
-    mSlider.value = 1; DSlider.value = 1; tSlider.value = 1;
-    syncLabels();
-    if (mode === '2d') {
-      const xs = linspace(-XMAX, XMAX, N);
-      const ys = xs.map(x => c(x, 1, 1, 1));
-      Plotly.react('plot', [{
-        x: xs, y: ys, type: 'scatter', mode: 'lines',
-        line: { color: '#e1222c', width: 3, shape: 'spline' },
-        fill: 'tozeroy', fillcolor: 'rgba(225,34,44,0.08)'
-      }], baseLayout(UI_REV_2D + '-reset-' + Date.now(), {
-        xaxis: { title: 'x', range: [-XMAX, XMAX], gridcolor: '#eeeeee', zerolinecolor: '#cccccc', color: '#767676' },
-        yaxis: { title: 'c(x, t)', range: [0, 5], gridcolor: '#eeeeee', zerolinecolor: '#cccccc', color: '#767676' }
-      }), plotConfig());
-      peakVal.textContent = fmt(c(0, 1, 1, 1));
-    } else {
-      redraw();
-    }
+    applyDefaults(formula);
+    camera3dSet = (mode==='3d') ? false : camera3dSet;
+    redraw();
   });
 
   syncLabels();
