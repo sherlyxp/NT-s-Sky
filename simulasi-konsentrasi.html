@@ -40,9 +40,7 @@
 
   .eq-block{ text-align: center; padding: 22px 10px 24px; margin: 4px 0 22px 0; border-top: 1px solid var(--panel-line); border-bottom: 1px solid var(--panel-line); }
   .eq-block .eq-render{ font-size: 24px; }
-  .eq-block .eq-render, .eq-block .eq-render .katex, .eq-block .eq-render .katex *{
-    color: var(--red) !important;
-  }
+  .eq-block .eq-render, .eq-block .eq-render .katex, .eq-block .eq-render .katex *{ color: var(--red) !important; }
   .eq-block .eq-caption{ margin-top: 10px; font-size: 12px; color: var(--ink-dim); }
 
   .symbol-grid{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 22px; margin: 14px 0 4px 0; }
@@ -143,6 +141,8 @@
       <button data-formula="point" class="active">1. Sumber Titik</button>
       <button data-formula="step">2. Fungsi Tangga</button>
       <button data-formula="slab">3. Balok Terbatas</button>
+      <button data-formula="rod">4. Batang Berhingga</button>
+      <button data-formula="flux">5. Fluks J₀</button>
     </div>
 
     <section class="explain">
@@ -236,6 +236,59 @@
         </div>
       </div>
 
+      <div class="formula-block" id="explain-rod">
+        <h2>Rumus ini ngomongin apa?</h2>
+        <p>
+          Kalau tiga fitur sebelumnya membahas zat yang menyebar bebas di garis tak berhingga, fitur ini beda total: sekarang zatnya terkurung di dalam <b>batang berhingga</b> sepanjang h (dari x=0 sampai x=h). Kedua ujung batang dijaga tetap konstan — ujung kiri selalu bernilai c₁, ujung kanan selalu c₂ — sementara batangnya sendiri awalnya kosong (c=0 di mana-mana). Rumus ini menjawab: <b>bagaimana bagian dalam batang terisi seiring waktu, menuju profil akhirnya?</b>
+        </p>
+        <div class="eq-block">
+          <div class="eq-render" id="eq-rod"></div>
+          <div class="eq-caption">solusi difusi 1D pada batang berhingga dengan kedua ujung dijaga konstan di c₁ dan c₂</div>
+        </div>
+        <h2>Tiap simbol ngomong apa</h2>
+        <div class="symbol-grid">
+          <div class="symbol-item"><span class="sym">c₁, c₂</span><span class="desc">Konsentrasi yang dijaga <b>konstan</b> di ujung kiri (x=0) dan ujung kanan (x=h).</span></div>
+          <div class="symbol-item"><span class="sym">h</span><span class="desc"><b>Panjang batang</b> — jaraknya dari ujung ke ujung.</span></div>
+          <div class="symbol-item"><span class="sym">suku linear</span><span class="desc">c₁+(c₂−c₁)x/h — ini bagian <b>tunak (steady-state)</b>, garis lurus yang menghubungkan c₁ ke c₂.</span></div>
+          <div class="symbol-item"><span class="sym">suku deret</span><span class="desc">Bagian <b>transien</b> — meluruh seiring t membesar, menggambarkan proses "menuju" ke garis lurus tadi.</span></div>
+        </div>
+        <h2>Interpretasinya</h2>
+        <p>Di t=0, seluruh suku deret saling meniadakan sehingga c(x,t)=0 di mana-mana (batang masih kosong) kecuali tepat di kedua ujung yang sudah dipaksa ke c₁ dan c₂. Seiring t membesar, suku deret itu meluruh (faktor eksponensialnya menuju nol), dan yang tersisa cuma garis lurus c₁+(c₂−c₁)x/h — bentuk akhir yang tidak berubah lagi.</p>
+        <h2>Contoh di dunia nyata</h2>
+        <div class="example-box">
+          <ul>
+            <li><b>Sel difusi (diffusion cell)</b> — membran dijepit di antara dua reservoir berkonsentrasi beda, lalu diamati bagaimana profil di dalam membran terbentuk seiring waktu.</li>
+            <li><b>Batang logam</b> yang kedua ujungnya direndam dalam larutan berkonsentrasi berbeda.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="formula-block" id="explain-flux">
+        <h2>Rumus ini ngomongin apa?</h2>
+        <p>
+          Ini pasangan dari Fitur 4. Kalau Fitur 4 menjawab "seberapa pekat di posisi x", fitur ini menjawab pertanyaan berbeda: <b>seberapa deras zat mengalir tepat di ujung kiri batang (x=0), dari waktu ke waktu?</b> Laju alir ini disebut fluks, dihitung lewat hukum Fick: J = D·∂c/∂x.
+        </p>
+        <div class="eq-block">
+          <div class="eq-render" id="eq-flux"></div>
+          <div class="eq-caption">fluks di x=0 — bagian tunak (konstan) ditambah bagian transien (meluruh, cuma berarti di waktu-waktu awal)</div>
+        </div>
+        <h2>Tiap simbol ngomong apa</h2>
+        <div class="symbol-grid">
+          <div class="symbol-item"><span class="sym">J₀</span><span class="desc"><b>Fluks</b> di x=0 — jumlah zat yang lewat per satuan luas per satuan waktu.</span></div>
+          <div class="symbol-item"><span class="sym">fluks tunak</span><span class="desc">D(c₂−c₁)/h — nilai <b>konstan</b> yang bertahan selamanya setelah transiennya habis.</span></div>
+          <div class="symbol-item"><span class="sym">fluks transien</span><span class="desc">Bagian yang <b>meluruh cepat</b> — cuma signifikan di waktu-waktu awal saat batang baru mulai terisi.</span></div>
+        </div>
+        <h2>Interpretasinya</h2>
+        <p>Perhatikan bahwa grafik fitur ini berbeda bentuk dari empat fitur lainnya: sumbu-x nya adalah <b>waktu (t)</b>, bukan posisi (x) — karena J₀ sudah dievaluasi tepat di satu titik (x=0), nilainya cuma bergantung pada t. Di awal, fluksnya bisa jauh dari nilai akhirnya (karena batang masih menyesuaikan diri), lalu mendatar menuju nilai tunak D(c₂−c₁)/h begitu transiennya habis meluruh.</p>
+        <h2>Contoh di dunia nyata</h2>
+        <div class="example-box">
+          <ul>
+            <li><b>Uji permeabilitas membran</b> — mengukur laju obat/gas yang menembus membran dari waktu ke waktu, sampai mencapai laju konstan.</li>
+            <li><b>Sensor gas</b> yang butuh waktu untuk mencapai pembacaan stabil setelah dipasang.</li>
+          </ul>
+        </div>
+      </div>
+
     </section>
 
     <div class="tool-head">
@@ -279,7 +332,23 @@
           <div class="range-labels"><span>0.1</span><span>8</span></div>
         </div>
 
-        <div class="field">
+        <div class="field" id="c1Field" style="display:none;">
+          <div class="field-top"><label><span class="sym">c₁</span>konsentrasi di x=0</label><span class="val" id="c1Val">2.00</span></div>
+          <input type="range" id="c1Slider" min="0" max="20" step="0.1" value="2">
+          <div class="range-labels"><span>0</span><span>20</span></div>
+        </div>
+        <div class="field" id="c2Field" style="display:none;">
+          <div class="field-top"><label><span class="sym">c₂</span>konsentrasi di x=h</label><span class="val" id="c2Val">8.00</span></div>
+          <input type="range" id="c2Slider" min="0" max="20" step="0.1" value="8">
+          <div class="range-labels"><span>0</span><span>20</span></div>
+        </div>
+        <div class="field" id="hField" style="display:none;">
+          <div class="field-top"><label><span class="sym">h</span>panjang batang</label><span class="val" id="hVal">5.00</span></div>
+          <input type="range" id="hSlider" min="1" max="15" step="0.5" value="5">
+          <div class="range-labels"><span>1</span><span>15</span></div>
+        </div>
+
+        <div class="field" id="DField">
           <div class="field-top"><label><span class="sym">D</span>koefisien difusi</label><span class="val" id="DVal">1.00</span></div>
           <input type="range" id="DSlider" min="0.05" max="20" step="0.05" value="1">
           <div class="range-labels"><span>0.05</span><span>20</span></div>
@@ -315,6 +384,8 @@
     katex.render("c(x,t)=\\dfrac{m}{\\sqrt{4\\pi D t}}\\,e^{-x^2/4Dt}", document.getElementById('eq-point'), { throwOnError: false });
     katex.render("c(x,t)=\\dfrac{c_0}{2}\\left(1-\\operatorname{erf}\\left(\\dfrac{x}{\\sqrt{4Dt}}\\right)\\right)", document.getElementById('eq-step'), { throwOnError: false });
     katex.render("c(x,t)=\\dfrac{C_0}{2}\\left(\\operatorname{erf}\\left(\\dfrac{l-x}{\\sqrt{4Dt}}\\right)+\\operatorname{erf}\\left(\\dfrac{l+x}{\\sqrt{4Dt}}\\right)\\right)", document.getElementById('eq-slab'), { throwOnError: false });
+    katex.render("c(x,t)=c_1+\\dfrac{c_2-c_1}{h}x+\\displaystyle\\sum_{n=1}^{\\infty}\\dfrac{2}{n\\pi}\\big[(-1)^n c_2 - c_1\\big]\\sin\\!\\left(\\dfrac{n\\pi x}{h}\\right)e^{-(n\\pi/h)^2 Dt}", document.getElementById('eq-rod'), { throwOnError: false, displayMode: true });
+    katex.render("J_0=D\\dfrac{\\partial c}{\\partial x}\\bigg|_{x=0}=\\underbrace{\\dfrac{D}{h}(c_2-c_1)}_{\\text{tunak}}+\\underbrace{\\dfrac{2D}{h}\\displaystyle\\sum_{n=1}^{\\infty}\\big[(-1)^n c_2 - c_1\\big]e^{-n^2\\pi^2 Dt/h^2}}_{\\text{transien}}", document.getElementById('eq-flux'), { throwOnError: false, displayMode: true });
   });
 
   // ---- error function approximation (Abramowitz & Stegun 7.1.26, max error ~1.5e-7) ----
@@ -331,7 +402,23 @@
   function cStep(x,t,c0,D){ return (c0/2) * (1 - erf(x/Math.sqrt(4*D*t))); }
   function cSlab(x,t,C0,l,D){ const denom = Math.sqrt(4*D*t); return (C0/2) * (erf((l-x)/denom) + erf((l+x)/denom)); }
 
-  let formula = 'point'; // 'point' | 'step' | 'slab'
+  const ROD_TERMS = 80;
+  function cRod(x,t,c1,c2,h,D){
+    let sum = c1 + (c2-c1)/h*x;
+    for(let n=1;n<=ROD_TERMS;n++){
+      sum += (2/(n*Math.PI)) * (Math.pow(-1,n)*c2 - c1) * Math.sin(n*Math.PI*x/h) * Math.exp(-Math.pow(n*Math.PI/h,2)*D*t);
+    }
+    return sum;
+  }
+  function fluxJ0(t,c1,c2,h,D){
+    let sum = D/h*(c2-c1);
+    for(let n=1;n<=ROD_TERMS;n++){
+      sum += (2*D/h) * (Math.pow(-1,n)*c2 - c1) * Math.exp(-Math.pow(n*Math.PI/h,2)*D*t);
+    }
+    return sum;
+  }
+
+  let formula = 'point'; // 'point' | 'step' | 'slab' | 'rod' | 'flux'
   let mode = '2d';
   let camera3dSet = false;
   const XMAX = 10;
@@ -341,12 +428,18 @@
   const c0Slider = document.getElementById('c0Slider');
   const C0Slider = document.getElementById('C0Slider');
   const lSlider = document.getElementById('lSlider');
+  const c1Slider = document.getElementById('c1Slider');
+  const c2Slider = document.getElementById('c2Slider');
+  const hSlider = document.getElementById('hSlider');
   const DSlider = document.getElementById('DSlider');
   const tSlider = document.getElementById('tSlider');
   const mVal = document.getElementById('mVal');
   const c0Val = document.getElementById('c0Val');
   const C0Val = document.getElementById('C0Val');
   const lVal = document.getElementById('lVal');
+  const c1Val = document.getElementById('c1Val');
+  const c2Val = document.getElementById('c2Val');
+  const hVal = document.getElementById('hVal');
   const DVal = document.getElementById('DVal');
   const tVal = document.getElementById('tVal');
   const tField = document.getElementById('tField');
@@ -354,6 +447,7 @@
   const readoutLabel = document.getElementById('readoutLabel');
   const btn2d = document.getElementById('btn2d');
   const btn3d = document.getElementById('btn3d');
+  const viewSwitchEl = document.querySelector('.view-switch');
   const dragModeSwitch = document.getElementById('dragModeSwitch');
   const btnOrbit = document.getElementById('btnOrbit');
   const btnPan = document.getElementById('btnPan');
@@ -361,6 +455,9 @@
   const c0Field = document.getElementById('c0Field');
   const C0Field = document.getElementById('C0Field');
   const lField = document.getElementById('lField');
+  const c1Field = document.getElementById('c1Field');
+  const c2Field = document.getElementById('c2Field');
+  const hField = document.getElementById('hField');
   const toolHint = document.getElementById('toolHint');
 
   function currentVals(){
@@ -369,6 +466,9 @@
       c0: parseFloat(c0Slider.value),
       C0: parseFloat(C0Slider.value),
       l: parseFloat(lSlider.value),
+      c1: parseFloat(c1Slider.value),
+      c2: parseFloat(c2Slider.value),
+      h: parseFloat(hSlider.value),
       D: parseFloat(DSlider.value),
       t: parseFloat(tSlider.value)
     };
@@ -377,12 +477,20 @@
   function computeC(x,t,vals){
     if(formula==='point') return cPoint(x,t,vals.m,vals.D);
     if(formula==='step') return cStep(x,t,vals.c0,vals.D);
-    return cSlab(x,t,vals.C0,vals.l,vals.D);
+    if(formula==='slab') return cSlab(x,t,vals.C0,vals.l,vals.D);
+    return cRod(x,t,vals.c1,vals.c2,vals.h,vals.D);
   }
-  function yMax(vals){
-    if(formula==='point') return 5;
-    if(formula==='step') return Math.max(1, vals.c0*1.08);
-    return Math.max(1, vals.C0*1.08);
+  function xDomain(vals){
+    if(formula==='rod') return [0, vals.h];
+    return [-XMAX, XMAX];
+  }
+  function yRange(vals){
+    if(formula==='point') return [0,5];
+    if(formula==='step') return [0, Math.max(1, vals.c0*1.08)];
+    if(formula==='slab') return [0, Math.max(1, vals.C0*1.08)];
+    const lo = Math.min(0, vals.c1, vals.c2), hi = Math.max(vals.c1, vals.c2);
+    const pad = Math.max(0.5, (hi-lo)*0.15);
+    return [lo-pad, hi+pad];
   }
 
   function linspace(a,b,n){ const out=new Array(n); for(let i=0;i<n;i++) out[i]=a+(b-a)*i/(n-1); return out; }
@@ -390,7 +498,27 @@
 
   function draw2D(){
     const vals = currentVals();
-    const xs = linspace(-XMAX, XMAX, N);
+
+    if(formula==='flux'){
+      const ts = linspace(0.05, 20, N);
+      const ys = ts.map(tt => fluxJ0(tt, vals.c1, vals.c2, vals.h, vals.D));
+      const trace = {
+        x: ts, y: ys, type:'scatter', mode:'lines',
+        line: { color:'#e1222c', width:3, shape:'spline' },
+        fill:'tozeroy', fillcolor:'rgba(225,34,44,0.08)',
+        hovertemplate:'t=%{x:.2f}<br>J0=%{y:.4f}<extra></extra>'
+      };
+      const layout = baseLayout('nt-sky-2d-flux', {
+        xaxis: { title:'t', range:[0,20], gridcolor:'#eeeeee', zerolinecolor:'#cccccc', color:'#767676' },
+        yaxis: { title:'J0(t)', gridcolor:'#eeeeee', zerolinecolor:'#cccccc', color:'#767676' }
+      });
+      Plotly.react('plot', [trace], layout, plotConfig());
+      peakVal.textContent = fmt(vals.D/vals.h*(vals.c2-vals.c1));
+      return;
+    }
+
+    const [xMin,xMax] = xDomain(vals);
+    const xs = linspace(xMin, xMax, N);
     const ys = xs.map(x => computeC(x, vals.t, vals));
     const trace = {
       x: xs, y: ys, type:'scatter', mode:'lines',
@@ -398,42 +526,47 @@
       fill:'tozeroy', fillcolor:'rgba(225,34,44,0.08)',
       hovertemplate:'x=%{x:.2f}<br>c=%{y:.4f}<extra></extra>'
     };
+    const [yLo,yHi] = yRange(vals);
     const layout = baseLayout('nt-sky-2d-'+formula, {
-      xaxis: { title:'x', range:[-XMAX,XMAX], gridcolor:'#eeeeee', zerolinecolor:'#cccccc', color:'#767676' },
-      yaxis: { title:'c(x, t)', range:[0, yMax(vals)], gridcolor:'#eeeeee', zerolinecolor:'#cccccc', color:'#767676' }
+      xaxis: { title:'x', range:[xMin,xMax], gridcolor:'#eeeeee', zerolinecolor:'#cccccc', color:'#767676' },
+      yaxis: { title:'c(x, t)', range:[yLo,yHi], gridcolor:'#eeeeee', zerolinecolor:'#cccccc', color:'#767676' }
     });
     Plotly.react('plot', [trace], layout, plotConfig());
-    peakVal.textContent = fmt(computeC(0, vals.t, vals));
+    const readX = (formula==='rod') ? vals.h/2 : 0;
+    peakVal.textContent = fmt(computeC(readX, vals.t, vals));
   }
 
   function draw3D(){
     const vals = currentVals();
-    const xs = linspace(-XMAX, XMAX, 90);
+    const [xMin,xMax] = xDomain(vals);
+    const xs = linspace(xMin, xMax, 90);
     const ts = linspace(0.05, 10, 90);
     const z = ts.map(tt => xs.map(x => computeC(x, tt, vals)));
+    const [yLo,yHi] = yRange(vals);
     const surfaceTrace = {
       x: xs, y: ts, z: z, type:'surface',
       colorscale: [[0,'#0d6efd'],[0.35,'#22b8d8'],[0.7,'#a9d96b'],[1,'#ffe14d']],
-      cmin: 0, cmax: yMax(vals), showscale: true,
+      cmin: yLo, cmax: yHi, showscale: true,
       colorbar: { title:{ text:'c', font:{ color:'#767676', size:12 } }, outlinewidth:0, thickness:14, len:0.7, tickfont:{ color:'#767676', size:10 } },
       contours: { z: { show:false } }
     };
     const tSlice = Math.min(Math.max(vals.t, 0.05), 10);
-    const xsSlice = linspace(-XMAX, XMAX, 150);
+    const xsSlice = linspace(xMin, xMax, 150);
     const sliceTrace = {
       x: xsSlice, y: xsSlice.map(()=>tSlice), z: xsSlice.map(x=>computeC(x,tSlice,vals)),
       type:'scatter3d', mode:'lines', line:{ color:'#111111', width:7 }, hoverinfo:'skip'
     };
     const scene = {
-      xaxis: { title:'x', range:[-XMAX,XMAX], color:'#767676', gridcolor:'#e4e4e4', backgroundcolor:'rgba(0,0,0,0)' },
+      xaxis: { title:'x', range:[xMin,xMax], color:'#767676', gridcolor:'#e4e4e4', backgroundcolor:'rgba(0,0,0,0)' },
       yaxis: { title:'t', range:[0,10], color:'#767676', gridcolor:'#e4e4e4', backgroundcolor:'rgba(0,0,0,0)' },
-      zaxis: { title:'c', range:[0, yMax(vals)], color:'#767676', gridcolor:'#e4e4e4', backgroundcolor:'rgba(0,0,0,0)' },
+      zaxis: { title:'c', range:[yLo,yHi], color:'#767676', gridcolor:'#e4e4e4', backgroundcolor:'rgba(0,0,0,0)' },
       aspectmode:'manual', aspectratio:{ x:1, y:1, z:0.6 }
     };
     if(!camera3dSet){ scene.camera = { eye:{ x:1.6, y:-1.7, z:0.9 } }; camera3dSet = true; }
     const layout = baseLayout('nt-sky-3d-'+formula, { scene });
     Plotly.react('plot', [surfaceTrace, sliceTrace], layout, plotConfig());
-    peakVal.textContent = fmt(computeC(0, vals.t, vals));
+    const readX = (formula==='rod') ? vals.h/2 : 0;
+    peakVal.textContent = fmt(computeC(readX, vals.t, vals));
   }
 
   function baseLayout(uirevision, extra){
@@ -445,18 +578,23 @@
   function plotConfig(){
     return { responsive:true, scrollZoom:true, displaylogo:false, modeBarButtonsToRemove:['lasso2d','select2d','toImage'], displayModeBar:true };
   }
-  function redraw(){ mode==='2d' ? draw2D() : draw3D(); }
+  function redraw(){ (mode==='2d' || formula==='flux') ? draw2D() : draw3D(); }
 
   function syncLabels(){
     mVal.textContent = fmt(parseFloat(mSlider.value));
     c0Val.textContent = fmt(parseFloat(c0Slider.value));
     C0Val.textContent = fmt(parseFloat(C0Slider.value));
     lVal.textContent = fmt(parseFloat(lSlider.value));
+    c1Val.textContent = fmt(parseFloat(c1Slider.value));
+    c2Val.textContent = fmt(parseFloat(c2Slider.value));
+    hVal.textContent = fmt(parseFloat(hSlider.value));
     DVal.textContent = fmt(parseFloat(DSlider.value));
     tVal.textContent = fmt(parseFloat(tSlider.value));
   }
 
-  [mSlider,c0Slider,C0Slider,lSlider,DSlider,tSlider].forEach(s => { s.addEventListener('input', () => { syncLabels(); redraw(); }); });
+  [mSlider,c0Slider,C0Slider,lSlider,c1Slider,c2Slider,hSlider,DSlider,tSlider].forEach(s => {
+    s.addEventListener('input', () => { syncLabels(); redraw(); });
+  });
 
   btn2d.addEventListener('click', () => {
     mode='2d'; btn2d.classList.add('active'); btn3d.classList.remove('active');
@@ -476,17 +614,23 @@
   const formulaDefaults = {
     point: { m:1, D:1, t:1 },
     step: { c0:1, D:1, t:1 },
-    slab: { C0:1, l:2, D:1, t:1 }
+    slab: { C0:1, l:2, D:1, t:1 },
+    rod: { c1:2, c2:8, h:5, D:1, t:1 },
+    flux: { c1:2, c2:8, h:5, D:1, t:1 }
   };
   const readoutLabels = {
     point: 'Puncak c(0,t)',
     step: 'Nilai di tengah c(0,t)',
-    slab: 'Puncak c(0,t)'
+    slab: 'Puncak c(0,t)',
+    rod: 'Nilai di tengah c(h/2,t)',
+    flux: 'Fluks tunak D(c₂−c₁)/h'
   };
   const toolHints = {
     point: 'geser slider di panel kiri, atau putar/geser tampilan 3D-nya',
     step: 'geser slider di panel kiri — perhatikan c(0,t) selalu c₀/2',
-    slab: 'geser l kecil/besar sekali untuk lihat kemiripannya dengan Fitur 1 & 2'
+    slab: 'geser l kecil/besar sekali untuk lihat kemiripannya dengan Fitur 1 & 2',
+    rod: 'geser t dari kecil ke besar, lihat batang terisi menuju garis lurus',
+    flux: 'grafik ini sumbu-x nya waktu (t), bukan posisi — lihat fluks meluruh menuju nilai tunak'
   };
 
   function applyDefaults(f){
@@ -495,6 +639,9 @@
     if(d.c0!==undefined) c0Slider.value = d.c0;
     if(d.C0!==undefined) C0Slider.value = d.C0;
     if(d.l!==undefined) lSlider.value = d.l;
+    if(d.c1!==undefined) c1Slider.value = d.c1;
+    if(d.c2!==undefined) c2Slider.value = d.c2;
+    if(d.h!==undefined) hSlider.value = d.h;
     DSlider.value = d.D; tSlider.value = d.t;
     syncLabels();
   }
@@ -508,6 +655,15 @@
     c0Field.style.display = (f==='step') ? '' : 'none';
     C0Field.style.display = (f==='slab') ? '' : 'none';
     lField.style.display = (f==='slab') ? '' : 'none';
+    c1Field.style.display = (f==='rod' || f==='flux') ? '' : 'none';
+    c2Field.style.display = (f==='rod' || f==='flux') ? '' : 'none';
+    hField.style.display = (f==='rod' || f==='flux') ? '' : 'none';
+
+    const isFlux = (f==='flux');
+    tField.style.display = isFlux ? 'none' : '';
+    viewSwitchEl.style.display = isFlux ? 'none' : '';
+    if(isFlux){ dragModeSwitch.style.display = 'none'; mode = '2d'; }
+
     readoutLabel.textContent = readoutLabels[f];
     toolHint.textContent = toolHints[f];
     camera3dSet = false;
